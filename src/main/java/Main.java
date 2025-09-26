@@ -73,12 +73,24 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
+    
+        //Settings button with purple accent to add more purple to the theme
+        Button settingsBtn = createModernButton(
+            "🛠 Settings",
+            "#ab7ee6ff", "#9866daff", 
+            200, 55
+        );
+        settingsBtn.setOnAction(e -> {
+            LOGGER.info("Opening settings...");
+            settingsGUI settingsGUI = new settingsGUI();
+            settingsGUI.show();
+        });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, settingsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
-        Scene scene = new Scene(mainLayout, 450, 550);
+        Scene scene = new Scene(mainLayout, 400, 550);
         primaryStage.setTitle("HealthCare Pro - Patient Management System");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
