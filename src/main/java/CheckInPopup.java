@@ -68,25 +68,25 @@ public class CheckInPopup {
         );
         
         // Create modern header with icon
-        Label headerLabel = new Label("🏥 Patient Check-In Ready");
+        Label headerLabel = new Label("🏥 Patient Check-In");
         headerLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 24));
         headerLabel.setStyle("-fx-text-fill: #1b5e20;");
         
         // Create the main message label
-        Label messageLabel = new Label("Please check in your next patient");
+        Label messageLabel = new Label("Choose your check-in option:");
         messageLabel.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 16));
         messageLabel.setStyle("-fx-text-fill: #2e7d32;");
         
         // Create instruction label with modern styling
-        Label instructionLabel = new Label("Click 'Start' to begin the check-in process");
+        Label instructionLabel = new Label("Select whether this is a new patient or an existing patient");
         instructionLabel.setFont(Font.font("Segoe UI", 14));
         instructionLabel.setStyle("-fx-text-fill: #66bb6a;");
         
-        // Create modern Start button
-        Button startButton = new Button("🚀 Start Check-In");
-        startButton.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
-        startButton.setPrefSize(200, 50);
-        startButton.setStyle(
+        // Create New Patient button
+        Button newPatientButton = new Button("👤 New Patient");
+        newPatientButton.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+        newPatientButton.setPrefSize(200, 50);
+        newPatientButton.setStyle(
             "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
             "-fx-text-fill: white;" +
             "-fx-background-radius: 25;" +
@@ -95,9 +95,22 @@ public class CheckInPopup {
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0, 0, 4);"
         );
         
-        // Add modern hover effect to Start button
-        startButton.setOnMouseEntered(e -> {
-            startButton.setStyle(
+        // Create Existing Patient button
+        Button existingPatientButton = new Button("✅ Existing Patient");
+        existingPatientButton.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+        existingPatientButton.setPrefSize(200, 50);
+        existingPatientButton.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #ff9800, #f57c00);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 25;" +
+            "-fx-border-radius: 25;" +
+            "-fx-cursor: hand;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0, 0, 4);"
+        );
+        
+        // Add hover effects for New Patient button
+        newPatientButton.setOnMouseEntered(e -> {
+            newPatientButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
                 "-fx-text-fill: white;" +
                 "-fx-background-radius: 25;" +
@@ -109,8 +122,8 @@ public class CheckInPopup {
             );
         });
         
-        startButton.setOnMouseExited(e -> {
-            startButton.setStyle(
+        newPatientButton.setOnMouseExited(e -> {
+            newPatientButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
                 "-fx-text-fill: white;" +
                 "-fx-background-radius: 25;" +
@@ -122,8 +135,36 @@ public class CheckInPopup {
             );
         });
         
-        // Set button action
-        startButton.setOnAction(e -> handleStartButtonClick());
+        // Add hover effects for Existing Patient button  
+        existingPatientButton.setOnMouseEntered(e -> {
+            existingPatientButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #f57c00, #ef6c00);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 25;" +
+                "-fx-border-radius: 25;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 18, 0, 0, 6);" +
+                "-fx-scale-x: 1.05;" +
+                "-fx-scale-y: 1.05;"
+            );
+        });
+        
+        existingPatientButton.setOnMouseExited(e -> {
+            existingPatientButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #ff9800, #f57c00);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 25;" +
+                "-fx-border-radius: 25;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0, 0, 4);" +
+                "-fx-scale-x: 1.0;" +
+                "-fx-scale-y: 1.0;"
+            );
+        });
+        
+        // Set button actions
+        newPatientButton.setOnAction(e -> handleNewPatientButtonClick());
+        existingPatientButton.setOnAction(e -> handleExistingPatientButtonClick());
         
         // Create modern Cancel button
         Button cancelButton = new Button("❌ Cancel");
@@ -171,7 +212,8 @@ public class CheckInPopup {
             headerLabel,
             messageLabel,
             instructionLabel,
-            startButton,
+            newPatientButton,
+            existingPatientButton,
             cancelButton
         );
         
@@ -185,8 +227,8 @@ public class CheckInPopup {
         );
         container.getChildren().add(mainLayout);
         
-        // Create and set the scene with modern dimensions
-        Scene scene = new Scene(container, 450, 350);
+        // Create and set the scene with modern dimensions (increased height for two buttons)
+        Scene scene = new Scene(container, 450, 420);
         scene.setFill(null); // Transparent background for rounded corners
         popupStage.setScene(scene);
         
@@ -195,15 +237,29 @@ public class CheckInPopup {
     }
     
     /**
-     * Handle Start button click
+     * Handle New Patient button click
      */
-    private void handleStartButtonClick() {
+    private void handleNewPatientButtonClick() {
         startButtonClicked = true;
         
-        // Execute callback if provided
+        // Execute callback if provided (this will open new patient form)
         if (onStartCallback != null) {
             onStartCallback.run();
         }
+        
+        // Close the popup
+        popupStage.close();
+    }
+    
+    /**
+     * Handle Existing Patient button click  
+     */
+    private void handleExistingPatientButtonClick() {
+        startButtonClicked = true;
+        
+        // Open existing patient check-in directly
+        ExistingPatientCheckIn existingCheckIn = new ExistingPatientCheckIn();
+        existingCheckIn.show();
         
         // Close the popup
         popupStage.close();

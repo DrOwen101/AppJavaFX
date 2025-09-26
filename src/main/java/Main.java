@@ -16,6 +16,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Create sample data for testing (comment out in production)
+        SampleDataGenerator.createSamplePatients();
+        
         // Create main layout with modern styling
         VBox mainLayout = new VBox(20);
         mainLayout.setAlignment(Pos.CENTER);
@@ -78,7 +81,7 @@ public class Main extends Application {
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
-        Scene scene = new Scene(mainLayout, 450, 550);
+        Scene scene = new Scene(mainLayout, 450, 620);
         primaryStage.setTitle("HealthCare Pro - Patient Management System");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
