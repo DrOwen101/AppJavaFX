@@ -80,6 +80,7 @@ public class AppointmentManagerGUI {
         mainLayout.getChildren().add(tabPane);
         
         Scene scene = new Scene(mainLayout, 800, 600);
+        ThemeManager.getInstance().applyTheme(scene); // apply light/dark mode
         stage.setScene(scene);
         
         // Load existing appointment data

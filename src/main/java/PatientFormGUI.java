@@ -70,9 +70,6 @@ public class PatientFormGUI {
         
         // Create main layout with modern styling
         VBox mainLayout = new VBox(0);
-        mainLayout.setStyle(
-            "-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);" // Light green gradient
-        );
         
         // Create header section with save button
         HBox headerSection = createModernHeaderSection();
@@ -102,6 +99,7 @@ public class PatientFormGUI {
         
         // Create scene with modern styling
         Scene scene = new Scene(mainLayout, 900, 750);
+        ThemeManager.getInstance().applyTheme(scene); // apply light/dark mode
         stage.setScene(scene);
         stage.centerOnScreen();
         
@@ -194,14 +192,7 @@ public class PatientFormGUI {
     private VBox createModernPatientInfoSection() {
         VBox section = new VBox(20);
         section.setPadding(new Insets(25));
-        section.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
-            "-fx-border-color: #e8f5e8;" +
-            "-fx-border-width: 1;"
-        );
+        section.getStyleClass().add("section");
         
         // Section header
         Label sectionHeader = new Label("👤 Patient Demographics");

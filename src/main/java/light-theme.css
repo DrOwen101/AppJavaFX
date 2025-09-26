@@ -1,0 +1,48 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom, #e8f5e8, #f0f9f0);
+    -fx-text-fill: #2e7d32;
+}
+
+/* Sections like form cards */
+.section {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);
+    -fx-border-color: #e8f5e8;
+    -fx-border-width: 1;
+}
+
+/* Header bar */
+.header {
+    -fx-background-color: transparent;
+}
+
+/* Labels */
+.title-label {
+    -fx-text-fill: #1b5e20;
+}
+
+.subtitle-label {
+    -fx-text-fill: #388e3c;
+}
+
+.version-label {
+    -fx-text-fill: #81c784;
+}
+
+.modern-button {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.modern-button:hover {
+    -fx-background-color: #1e7e34;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 4);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
