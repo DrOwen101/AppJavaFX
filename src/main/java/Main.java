@@ -73,8 +73,20 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
+
+        // Settings button
+        Button settingsBtn = createModernButton(
+            "⚙️ Settings",
+            "#6c757d", "#5a6268", // muted gray
+            200, 45
+        );
+        settingsBtn.setOnAction(e -> {
+            LOGGER.info("Opening Settings Panel...");
+            SettingsPanel sp = new SettingsPanel();
+            sp.show();
+        });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+    buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, settingsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
@@ -213,6 +225,7 @@ public class Main extends Application {
         alert.showAndWait();
     }
     
+
     public static void main(String[] args) {
         launch(args);
     }
