@@ -31,13 +31,7 @@ public class Main extends Application {
         VBox buttonContainer = new VBox(15);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.setPadding(new Insets(30));
-        buttonContainer.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-background-radius: 15;" +
-                        "-fx-border-radius: 15;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 5);" +
-                        "-fx-border-color: #d4edda;" +
-                        "-fx-border-width: 1;");
+        buttonContainer.getStyleClass().add("button-container");
 
         // Create Patient Form button with modern green styling
         Button patientFormBtn = createModernButton(
@@ -70,13 +64,13 @@ public class Main extends Application {
             showSavedPatientsDialog(primaryStage);
         });
 
-        Button settingsButtton =createModernButton(
+        Button settingsButtton = createModernButton(
                 "View Settings",
                 "#648c95ff", "#648c95ff", // blue grey accent for variety
                 200, 55);
         settingsButtton.setOnAction(e -> {
             LOGGER.info("Opening settings view...");
-            //needs something here to trigger gui
+            showSettingsDialog(primaryStage);
         });
 
         buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, settingsButtton);
@@ -84,6 +78,7 @@ public class Main extends Application {
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
 
         Scene scene = new Scene(mainLayout, 450, 550);
+        ThemeManager.applyTheme(scene);
         primaryStage.setTitle("HealthCare Pro - Patient Management System");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
@@ -211,6 +206,37 @@ public class Main extends Application {
         alert.getDialogPane().setPrefSize(600, 400);
 
         alert.showAndWait();
+    }
+
+    private void showSettingsDialog(Stage parentStage) {
+        SettingsGUI settingsPanel = new SettingsGUI(parentStage);
+        settingsPanel.show();
+
+        if (settingsPanel.isSaved()) {
+            // Update global theme
+            ThemeManager.setDarkTheme(settingsPanel.isDarkThemeSelected());
+
+            // Reapply to main stage
+            ThemeManager.applyTheme(parentStage.getScene());
+
+            LOGGER.info("Notifications: " + settingsPanel.isNotificationsEnabled());
+        }
+    }
+
+    private void applyTheme(boolean dark, Stage parentStage) {
+        Scene scene = parentStage.getScene();
+        scene.getStylesheets().clear();
+
+        String themeFile = dark ? "/styles/dark-theme.css" : "/styles/light-theme.css";
+        var resource = getClass().getResource(themeFile);
+        System.out.println("Loading theme: " + resource);
+
+        if (resource == null) {
+            System.err.println("⚠️ Theme file not found: " + themeFile);
+            return; // fail gracefully instead of crashing
+        }
+
+        scene.getStylesheets().add(resource.toExternalForm());
     }
 
     public static void main(String[] args) {
