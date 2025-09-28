@@ -74,7 +74,18 @@ public class Main extends Application {
             showSavedPatientsDialog(primaryStage);
         });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+        Button settingsBtn = createModernButton(
+            "Settings",
+            "#bd42c1ff", "#7c3d7aff",
+            200, 55
+        );
+        settingsBtn.setOnAction(e -> {
+            LOGGER.info("Opening settings view...");
+            SettingsPanelGUI settingsPanel = new SettingsPanelGUI();
+            settingsPanel.show();
+        });
+
+        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, settingsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
