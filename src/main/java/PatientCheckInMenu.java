@@ -198,50 +198,162 @@ public class PatientCheckInMenu {
         Stage searchStage = new Stage();
         searchStage.setTitle("Search Existing Patients");
 
-        VBox root = new VBox(12);
-        root.setPadding(new Insets(14));
+        VBox root = new VBox(20);
+        root.setPadding(new Insets(25));
+        root.setStyle("-fx-background-color: linear-gradient(to bottom, #e8f5e8, #f1f8e9);");
 
+        // Create search form with modern card styling
+        VBox searchCard = new VBox(15);
+        searchCard.setPadding(new Insets(25));
+        searchCard.setStyle(
+            "-fx-background-color: white;" +
+            "-fx-background-radius: 15;" +
+            "-fx-border-radius: 15;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;"
+        );
+        
+        // Search form header
+        Label searchTitle = new Label("🔍 Search for Existing Patient");
+        searchTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
+        searchTitle.setStyle("-fx-text-fill: #2e7d32;");
+        
         // Use a grid so each input has a visible label next to it
         GridPane fields = new GridPane();
-        fields.setHgap(10);
-        fields.setVgap(8);
+        fields.setHgap(15);
+        fields.setVgap(12);
 
         Label fnLabel = new Label("First Name:");
+        fnLabel.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        fnLabel.setStyle("-fx-text-fill: #2e7d32;");
         TextField firstNameField = new TextField();
-        firstNameField.setPromptText("First name");
+        firstNameField.setPromptText("Enter first name");
+        firstNameField.setPrefHeight(35);
+        firstNameField.setStyle(
+            "-fx-background-radius: 8;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;" +
+            "-fx-font-size: 14;"
+        );
         fields.add(fnLabel, 0, 0);
         fields.add(firstNameField, 1, 0);
 
         Label lnLabel = new Label("Last Name:");
+        lnLabel.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        lnLabel.setStyle("-fx-text-fill: #2e7d32;");
         TextField lastNameField = new TextField();
-        lastNameField.setPromptText("Last name");
+        lastNameField.setPromptText("Enter last name");
+        lastNameField.setPrefHeight(35);
+        lastNameField.setStyle(
+            "-fx-background-radius: 8;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;" +
+            "-fx-font-size: 14;"
+        );
         fields.add(lnLabel, 0, 1);
         fields.add(lastNameField, 1, 1);
 
         Label dobLabel = new Label("Date of Birth:");
+        dobLabel.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        dobLabel.setStyle("-fx-text-fill: #2e7d32;");
         DatePicker dobPicker = new DatePicker();
-        dobPicker.setPromptText("DOB");
+        dobPicker.setPromptText("Select date of birth");
+        dobPicker.setPrefHeight(35);
+        dobPicker.setStyle(
+            "-fx-background-radius: 8;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;" +
+            "-fx-font-size: 14;"
+        );
         fields.add(dobLabel, 0, 2);
         fields.add(dobPicker, 1, 2);
 
-    // Reason textarea with a label and continue button on the right
-    Label reasonLabel = new Label("Reason for Visit:");
-    TextArea reasonArea = new TextArea();
-    reasonArea.setPromptText("Enter details of the reason for the visit");
-    reasonArea.setPrefRowCount(3);
+        // Add the search form to the search card
+        searchCard.getChildren().addAll(searchTitle, fields);
 
-        Button searchBtn = new Button("Search");
-        searchBtn.setStyle("-fx-background-color: #29b6f6; -fx-text-fill: white;");
+        // Reason textarea with a label and continue button on the right
+        Label reasonLabel = new Label("Reason for Visit:");
+        reasonLabel.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        reasonLabel.setStyle("-fx-text-fill: #2e7d32;");
+        TextArea reasonArea = new TextArea();
+        reasonArea.setPromptText("Enter details of the reason for the visit");
+        reasonArea.setPrefRowCount(3);
+        reasonArea.setStyle(
+            "-fx-background-radius: 8;" +
+            "-fx-border-radius: 8;" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;" +
+            "-fx-font-size: 14;" +
+            "-fx-font-family: 'Segoe UI';"
+        );
+
+        Button searchBtn = new Button("🔍 Search");
+        searchBtn.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        searchBtn.setPrefHeight(40);
+        searchBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        );
+        
+        // Hover effects for search button
+        searchBtn.setOnMouseEntered(e -> searchBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+            "-fx-cursor: hand;" +
+            "-fx-scale-x: 1.03;" +
+            "-fx-scale-y: 1.03;"
+        ));
+        searchBtn.setOnMouseExited(e -> searchBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        ));
+
+        // Results section with modern styling
+        VBox resultsCard = new VBox(15);
+        resultsCard.setPadding(new Insets(25));
+        resultsCard.setStyle(
+            "-fx-background-color: white;" +
+            "-fx-background-radius: 15;" +
+            "-fx-border-radius: 15;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;"
+        );
+
+        Label resultsTitle = new Label("📋 Search Results");
+        resultsTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+        resultsTitle.setStyle("-fx-text-fill: #2e7d32;");
 
         TableView<PatientDataObject> resultsTable = new TableView<>();
-        resultsTable.setPrefHeight(260);
+        resultsTable.setPrefHeight(200);
+        resultsTable.setStyle(
+            "-fx-background-color: #fafafa;" +
+            "-fx-border-color: #e0e0e0;" +
+            "-fx-border-radius: 8;" +
+            "-fx-background-radius: 8;"
+        );
 
         // Highlight selected row with a custom background color
         resultsTable.setRowFactory(tv -> {
             javafx.scene.control.TableRow<PatientDataObject> row = new javafx.scene.control.TableRow<>();
             row.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
                 if (isNowSelected) {
-                    row.setStyle("-fx-background-color: #dcedc8;");
+                    row.setStyle("-fx-background-color: #dcedc8; -fx-background-radius: 4;");
                 } else {
                     row.setStyle("");
                 }
@@ -267,8 +379,20 @@ public class PatientCheckInMenu {
 
     resultsTable.getColumns().addAll(Arrays.asList(nameCol, dobCol, idCol));
 
-    Button selectBtn = new Button("Select");
-        selectBtn.setStyle("-fx-background-color: #66bb6a; -fx-text-fill: white;");
+        // Add results to the results card
+        resultsCard.getChildren().addAll(resultsTitle, resultsTable);
+
+        Button selectBtn = new Button("✅ Select Patient");
+        selectBtn.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        selectBtn.setPrefHeight(40);
+        selectBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        );
         selectBtn.setDisable(true);
         // Enable Select button only when a row is selected
         resultsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
@@ -328,31 +452,118 @@ public class PatientCheckInMenu {
             }
         });
 
-    // Add a Cancel button next to Search and Select
-    Button cancelSearchBtn = new Button("Cancel");
-    cancelSearchBtn.setStyle("-fx-background-color: #ff8a80; -fx-text-fill: white;");
-    cancelSearchBtn.setOnAction(e -> {
-        searchStage.close();
-    });
+        // Add hover effects for select button
+        selectBtn.setOnMouseEntered(e -> {
+            if (!selectBtn.isDisabled()) {
+                selectBtn.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
+                    "-fx-text-fill: white;" +
+                    "-fx-background-radius: 12;" +
+                    "-fx-border-radius: 12;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-scale-x: 1.03;" +
+                    "-fx-scale-y: 1.03;"
+                );
+            }
+        });
+        selectBtn.setOnMouseExited(e -> {
+            if (!selectBtn.isDisabled()) {
+                selectBtn.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+                    "-fx-text-fill: white;" +
+                    "-fx-background-radius: 12;" +
+                    "-fx-border-radius: 12;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+                    "-fx-cursor: hand;"
+                );
+            }
+        });
 
-    HBox actions = new HBox(10);
-    // Spacer pushes the cancel button to the right
-    javafx.scene.layout.Region actionSpacer = new javafx.scene.layout.Region();
-    HBox.setHgrow(actionSpacer, javafx.scene.layout.Priority.ALWAYS);
-    actions.getChildren().addAll(searchBtn, selectBtn, actionSpacer, cancelSearchBtn);
+        // Add a Cancel button next to Search and Select
+        Button cancelSearchBtn = new Button("❌ Cancel");
+        cancelSearchBtn.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        cancelSearchBtn.setPrefHeight(40);
+        cancelSearchBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #ff8a80, #f44336);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        );
+        cancelSearchBtn.setOnAction(e -> {
+            searchStage.close();
+        });
 
-    // Create an HBox for the reason area with a Continue button on the right
-    Button continueBtn = new Button("Continue");
-    continueBtn.setStyle("-fx-background-color: #66bb6a; -fx-text-fill: white;");
+        // Hover effects for cancel button
+        cancelSearchBtn.setOnMouseEntered(e -> cancelSearchBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #f44336, #d32f2f);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+            "-fx-cursor: hand;" +
+            "-fx-scale-x: 1.03;" +
+            "-fx-scale-y: 1.03;"
+        ));
+        cancelSearchBtn.setOnMouseExited(e -> cancelSearchBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #ff8a80, #f44336);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        ));
 
-    // Update button label depending on whether a patient row is selected
-    resultsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-        if (newSel != null) {
-            continueBtn.setText("Confirm Check-In");
-        } else {
-            continueBtn.setText("Continue");
-        }
-    });
+        HBox actions = new HBox(15);
+        actions.setAlignment(Pos.CENTER);
+        // Spacer pushes the cancel button to the right
+        javafx.scene.layout.Region actionSpacer = new javafx.scene.layout.Region();
+        HBox.setHgrow(actionSpacer, javafx.scene.layout.Priority.ALWAYS);
+        actions.getChildren().addAll(searchBtn, selectBtn, actionSpacer, cancelSearchBtn);
+
+        // Create an HBox for the reason area with a Continue button on the right
+        Button continueBtn = new Button("➡️ Continue");
+        continueBtn.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
+        continueBtn.setPrefHeight(40);
+        continueBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        );
+
+        // Hover effects for continue button
+        continueBtn.setOnMouseEntered(e -> continueBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+            "-fx-cursor: hand;" +
+            "-fx-scale-x: 1.03;" +
+            "-fx-scale-y: 1.03;"
+        ));
+        continueBtn.setOnMouseExited(e -> continueBtn.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+            "-fx-cursor: hand;"
+        ));
+
+        // Update button label depending on whether a patient row is selected
+        resultsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            if (newSel != null) {
+                continueBtn.setText("✅ Confirm Check-In");
+            } else {
+                continueBtn.setText("➡️ Continue");
+            }
+        });
 
     continueBtn.setOnAction(e -> {
         PatientDataObject selected = resultsTable.getSelectionModel().getSelectedItem();
@@ -391,19 +602,42 @@ public class PatientCheckInMenu {
         }
     });
 
-    HBox reasonRow = new HBox(8);
-    reasonRow.getChildren().addAll(reasonArea, continueBtn);
-    reasonRow.setAlignment(Pos.CENTER_RIGHT);
+        // Create reason section with modern card styling
+        VBox reasonCard = new VBox(15);
+        reasonCard.setPadding(new Insets(25));
+        reasonCard.setStyle(
+            "-fx-background-color: white;" +
+            "-fx-background-radius: 15;" +
+            "-fx-border-radius: 15;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);" +
+            "-fx-border-color: #c8e6c9;" +
+            "-fx-border-width: 1;"
+        );
 
-    VBox container = new VBox(10);
-    // Place fields, actions, results, and finally the reason row (with continue button)
-    container.getChildren().addAll(fields, actions, resultsTable, reasonLabel, reasonRow);
-        container.setPadding(new Insets(8));
+        HBox reasonRow = new HBox(15);
+        reasonRow.getChildren().addAll(reasonArea, continueBtn);
+        reasonRow.setAlignment(Pos.CENTER_RIGHT);
+        HBox.setHgrow(reasonArea, javafx.scene.layout.Priority.ALWAYS);
 
-        ScrollPane sp = new ScrollPane(container);
+        reasonCard.getChildren().addAll(reasonLabel, reasonRow);
+
+        // Main container with proper spacing
+        VBox container = new VBox(20);
+        container.setPadding(new Insets(0)); // Remove padding since root already has it
+        
+        // Place search card, actions, results card, and reason card
+        container.getChildren().addAll(searchCard, actions, resultsCard, reasonCard);
+
+        root.getChildren().add(container);
+
+        ScrollPane sp = new ScrollPane(root);
         sp.setFitToWidth(true);
+        sp.setStyle(
+            "-fx-background: transparent;" +
+            "-fx-background-color: transparent;"
+        );
 
-        Scene scene = new Scene(sp, 700, 420);
+        Scene scene = new Scene(sp, 800, 650);
         searchStage.setScene(scene);
         searchStage.centerOnScreen();
         searchStage.show();
