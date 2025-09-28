@@ -28,6 +28,25 @@ public class PatientDataStorage {
     private PatientDataStorage() {
         this.savedPatients = new ArrayList<>();
         LOGGER.info("PatientDataStorage initialized");
+        // Seed with a demo patient so features like Quick Check-In have data to operate on
+        seedDemoPatient();
+    }
+
+    // Add a small demo patient for first-run UX and manual testing
+    private void seedDemoPatient() {
+        try {
+            PatientDataObject demo = new PatientDataObject();
+            demo.setFirstName("John");
+            demo.setLastName("Doe");
+            demo.setPhoneNumber("555-0101");
+            demo.setEmail("john.doe@example.com");
+            // ensure saved timestamp is set (constructor already sets it)
+            demo.setCheckInComplete(false);
+            this.savedPatients.add(demo);
+            LOGGER.info("Seeded demo patient: " + demo.getPatientId());
+        } catch (Exception e) {
+            LOGGER.fine("Failed to seed demo patient: " + e.getMessage());
+        }
     }
     
     /**

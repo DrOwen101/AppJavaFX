@@ -73,8 +73,26 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
+
+        //Create new button for quick checkin option
+        Button quickCheckInBtn = createModernButton(
+            "⚡ Quick Check-In",
+            "#c24bd2ff", "#896bb7ff", // Purple accent for variety
+            200, 55
+        );
+        // Navigate the primary stage to the Quick Check-In scene when pressed
+        quickCheckInBtn.setOnAction(e -> {
+            LOGGER.info("Navigating to Quick Check-In scene...");
+            // Preserve current scene to allow 'Back' navigation
+            Scene previous = primaryStage.getScene();
+            QuickCheckInGUI view = new QuickCheckInGUI(primaryStage, previous);
+            Scene qcScene = new Scene(view, 480, 360);
+            primaryStage.setTitle("Quick Check-In");
+            primaryStage.setScene(qcScene);
+            primaryStage.centerOnScreen();
+        });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, quickCheckInBtn, viewPatientsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
