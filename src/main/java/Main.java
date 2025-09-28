@@ -156,17 +156,17 @@ public class Main extends Application
         // Main title
         Label titleLabel = new Label("HealthCare Pro");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
-        titleLabel.setStyle("-fx-text-fill: #1b5e20;"); // Dark green
+        titleLabel.setStyle("-fx-text-fill: #10113cff;"); // Dark green
         
         // Subtitle
         Label subtitleLabel = new Label("Patient Management System");
         subtitleLabel.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 16));
-        subtitleLabel.setStyle("-fx-text-fill: #388e3c;"); // Medium green
+        subtitleLabel.setStyle("-fx-text-fill: #1a1b51ff;"); // Medium green
         
         // Version/status indicator
         Label versionLabel = new Label("v2.0 • Professional Edition");
         versionLabel.setFont(Font.font("Segoe UI", FontWeight.LIGHT, 12));
-        versionLabel.setStyle("-fx-text-fill: #81c784;"); // Light green
+        versionLabel.setStyle("-fx-text-fill: #2a2c85ff;"); // Light green
 
         header.getChildren().addAll(titleLabel, subtitleLabel, versionLabel);
         
