@@ -1049,22 +1049,52 @@ public class PatientCheckInGUI implements Darkmode {
     }
     
     /**
-     * Style all labels in the content area with the specified color
-     * This ensures ALL form labels remain consistently colored
+     * Style all textfield prompt text in the content area with the specified color
+     * This ensures textfield placeholders are properly colored for the theme
      */
-    private void styleAllLabelsInContentArea(String textColor) {
+    private void styleAllTextFieldPrompts(String promptColor) {
         if (contentArea != null) {
-            styleLabelsInNode(contentArea, textColor);
-            LOGGER.info("PatientCheckInGUI: Applied " + textColor + " color to all labels in content area");
+            styleTextFieldPromptsInNode(contentArea, promptColor);
+            LOGGER.info("PatientCheckInGUI: Applied " + promptColor + " color to all textfield prompts in content area");
+        }
+    }
+    
+    /**
+     * Style all labels in the contentArea VBox to ensure they stay black
+     * This overrides any theme-based styling that might affect labels
+     */
+    private void styleContentAreaLabels(String labelColor) {
+        if (contentArea != null) {
+            styleLabelsInNode(contentArea, labelColor);
+            LOGGER.info("PatientCheckInGUI: Applied " + labelColor + " color to all labels in contentArea VBox");
+        }
+    }
+    
+    /**
+     * Recursively style all TextField and TextArea prompt text within a given parent node
+     */
+    private void styleTextFieldPromptsInNode(javafx.scene.Node node, String promptColor) {
+        if (node instanceof javafx.scene.control.TextField) {
+            javafx.scene.control.TextField textField = (javafx.scene.control.TextField) node;
+            textField.setStyle("-fx-prompt-text-fill: " + promptColor + " !important;");
+        } else if (node instanceof javafx.scene.control.TextArea) {
+            javafx.scene.control.TextArea textArea = (javafx.scene.control.TextArea) node;
+            textArea.setStyle("-fx-prompt-text-fill: " + promptColor + " !important;");
+        } else if (node instanceof javafx.scene.Parent) {
+            javafx.scene.Parent parent = (javafx.scene.Parent) node;
+            for (javafx.scene.Node child : parent.getChildrenUnmodifiable()) {
+                styleTextFieldPromptsInNode(child, promptColor);
+            }
         }
     }
     
     /**
      * Recursively style all Label nodes within a given parent node
+     * This ensures form labels in contentArea stay the specified color
      */
     private void styleLabelsInNode(javafx.scene.Node node, String textColor) {
-        if (node instanceof Label) {
-            Label label = (Label) node;
+        if (node instanceof javafx.scene.control.Label) {
+            javafx.scene.control.Label label = (javafx.scene.control.Label) node;
             label.setStyle("-fx-text-fill: " + textColor + " !important;");
         } else if (node instanceof javafx.scene.Parent) {
             javafx.scene.Parent parent = (javafx.scene.Parent) node;
@@ -1387,8 +1417,11 @@ public class PatientCheckInGUI implements Darkmode {
             LOGGER.info("PatientCheckInGUI: Kept content area WHITE with BLACK text in dark mode (only page background changed)");
         }
         
-        // Apply comprehensive label styling to ALL labels in content area
-        styleAllLabelsInContentArea("black");
+        // Style textfield prompts for dark mode
+        styleAllTextFieldPrompts("#cccccc"); // Light gray prompt text for dark mode
+        
+        // Ensure contentArea labels stay BLACK in dark mode
+        styleContentAreaLabels("black");
         
         // Apply dark theme to scene root - this affects all JavaFX controls  
         stage.getScene().getRoot().setStyle(
@@ -1435,8 +1468,11 @@ public class PatientCheckInGUI implements Darkmode {
             LOGGER.info("PatientCheckInGUI: Kept content area WHITE with BLACK text in light mode (only page background changed)");
         }
         
-        // Apply comprehensive label styling to ALL labels in content area
-        styleAllLabelsInContentArea("black");
+        // Style textfield prompts for light mode
+        styleAllTextFieldPrompts("#666666"); // Dark gray prompt text for light mode
+        
+        // Ensure contentArea labels stay BLACK in light mode
+        styleContentAreaLabels("black");
         
         // Apply light theme to scene root - this affects all JavaFX controls
         stage.getScene().getRoot().setStyle(
