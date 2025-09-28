@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
 import javafx.geometry.Insets;
@@ -103,6 +104,27 @@ public class PatientCheckInGUI {
         this.currentStep = 1;
         initializeGUI();
     }
+
+    /**
+     * Constructor with existing patient and option to auto-verify all steps
+     * Used for quick check-in when confirming an existing patient from search.
+     */
+    public PatientCheckInGUI(NewPatient patient, boolean autoVerifyAll) {
+        this.checkInWorkflow = new CheckInWorkflow(patient);
+        this.currentStep = 1;
+        initializeGUI();
+
+        if (autoVerifyAll) {
+            CheckInWorkflow.CheckInSession session = this.checkInWorkflow.getCurrentSession();
+            session.setIdentificationVerified(true);
+            session.setInsuranceVerified(true);
+            session.setAppointmentConfirmed(true);
+            session.setContactInfoUpdated(true);
+            session.setPaymentProcessed(true);
+            session.setHealthScreeningComplete(true);
+            session.addSessionNote("Auto-verified for quick check-in from existing patient confirmation.");
+        }
+    }
     
     private void initializeGUI() {
         stage = new Stage();
@@ -140,10 +162,11 @@ public class PatientCheckInGUI {
             buttonArea
         );
         
-        // Create scroll pane with modern styling
-        ScrollPane scrollPane = new ScrollPane(mainLayout);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefViewportHeight(750);
+    // Create scroll pane with modern styling (smaller viewport for more compact window)
+    ScrollPane scrollPane = new ScrollPane(mainLayout);
+    scrollPane.setFitToWidth(true);
+    // Reduced viewport height so the overall window is smaller but still scrollable
+    scrollPane.setPrefViewportHeight(650);
         scrollPane.setStyle(
             "-fx-background: transparent;" +
             "-fx-background-color: transparent;"
@@ -152,8 +175,8 @@ public class PatientCheckInGUI {
         // Load first step
         loadCurrentStep();
         
-        // Create scene and show
-        Scene scene = new Scene(scrollPane, 900, 800);
+    // Create scene and show (reduced size for a more compact new-patient/info window)
+    Scene scene = new Scene(scrollPane, 800, 700);
         stage.setScene(scene);
         stage.show();
     }
@@ -459,6 +482,16 @@ public class PatientCheckInGUI {
         dobField = new TextField();
         dobField.setPromptText("MM/dd/yyyy");
         grid.add(dobField, 1, 2);
+
+        // Prefill if an existing patient was provided
+        if (checkInWorkflow != null && checkInWorkflow.getPatient() != null) {
+            NewPatient p = checkInWorkflow.getPatient();
+            if (p.getFirstName() != null) firstNameField.setText(p.getFirstName());
+            if (p.getLastName() != null) lastNameField.setText(p.getLastName());
+            if (p.getDateOfBirth() != null) {
+                dobField.setText(p.getDateOfBirth().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+            }
+        }
         
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
@@ -487,6 +520,14 @@ public class PatientCheckInGUI {
         groupNumberField = new TextField();
         groupNumberField.setPromptText("Enter group number (optional)");
         grid.add(groupNumberField, 1, 2);
+
+        // Prefill insurance fields if patient provided
+        if (checkInWorkflow != null && checkInWorkflow.getPatient() != null) {
+            NewPatient p = checkInWorkflow.getPatient();
+            if (p.getInsuranceProvider() != null) insuranceProviderField.setText(p.getInsuranceProvider());
+            if (p.getInsurancePolicyNumber() != null) policyNumberField.setText(p.getInsurancePolicyNumber());
+            // group number not stored on PatientForm; leave optional
+        }
         
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
@@ -515,7 +556,7 @@ public class PatientCheckInGUI {
         doctorNameField.setPromptText("Enter doctor's name");
         grid.add(doctorNameField, 1, 2);
         
-        grid.add(new Label("Appointment Type:"), 0, 3);
+    grid.add(new Label("Appointment Type:"), 0, 3);
         appointmentTypeCombo = new ComboBox<>();
         appointmentTypeCombo.getItems().addAll(
             "Annual Physical", "Follow-up", "Consultation", 
@@ -524,6 +565,17 @@ public class PatientCheckInGUI {
         appointmentTypeCombo.setPromptText("Select appointment type");
         grid.add(appointmentTypeCombo, 1, 3);
         
+        // Prefill appointment info if patient provided (use next upcoming appointment if present)
+        if (checkInWorkflow != null && checkInWorkflow.getPatient() != null) {
+            NewPatient p = checkInWorkflow.getPatient();
+            NewPatient.Appointment appt = p.getNextAppointment();
+            if (appt != null && appt.getAppointmentDateTime() != null) {
+                appointmentDatePicker.setValue(appt.getAppointmentDateTime().toLocalDate());
+                appointmentTimeField.setText(appt.getAppointmentDateTime().toLocalTime().toString());
+                if (appt.getDoctorName() != null) doctorNameField.setText(appt.getDoctorName());
+                if (appt.getAppointmentType() != null) appointmentTypeCombo.setValue(appt.getAppointmentType());
+            }
+        }
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
     }
@@ -556,6 +608,15 @@ public class PatientCheckInGUI {
         emergencyContactField = new TextField();
         emergencyContactField.setPromptText("Enter emergency contact info");
         grid.add(emergencyContactField, 1, 3);
+
+        // Prefill contact info if patient provided
+        if (checkInWorkflow != null && checkInWorkflow.getPatient() != null) {
+            NewPatient p = checkInWorkflow.getPatient();
+            if (p.getPhoneNumber() != null) phoneField.setText(p.getPhoneNumber());
+            if (p.getEmail() != null) emailField.setText(p.getEmail());
+            if (p.getAddress() != null) addressField.setText(p.getAddress());
+            if (p.getEmergencyContact() != null) emergencyContactField.setText(p.getEmergencyContact());
+        }
         
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
@@ -587,6 +648,8 @@ public class PatientCheckInGUI {
         referenceNumberField = new TextField();
         referenceNumberField.setPromptText("Enter reference/confirmation number");
         grid.add(referenceNumberField, 1, 2);
+
+        // No historical payment fields stored on PatientForm; leave payment fields blank for manual entry
         
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
@@ -606,17 +669,22 @@ public class PatientCheckInGUI {
         temperatureField.setPromptText("Enter temperature reading");
         grid.add(temperatureField, 1, 0);
         
-        grid.add(new Label("Current Symptoms:"), 0, 1);
+    grid.add(new Label("Current Symptoms:"), 0, 1);
         symptomsArea = new TextArea();
         symptomsArea.setPromptText("Enter any current symptoms or 'None'");
         symptomsArea.setPrefRowCount(3);
         grid.add(symptomsArea, 1, 1);
         
-        recentTravelCheckBox = new CheckBox("Recent travel (within 14 days)");
-        grid.add(recentTravelCheckBox, 0, 2, 2, 1);
-        
+    recentTravelCheckBox = new CheckBox("Recent travel (within 14 days)");
+    // Ensure label is visible on darker headers/backgrounds
+    recentTravelCheckBox.setStyle("-fx-text-fill: #1b5e20; -fx-font-size: 12px;");
+    grid.add(recentTravelCheckBox, 0, 2, 2, 1);
+
         covidExposureCheckBox = new CheckBox("Recent COVID-19 exposure");
+        covidExposureCheckBox.setStyle("-fx-text-fill: #1b5e20; -fx-font-size: 12px;");
         grid.add(covidExposureCheckBox, 0, 3, 2, 1);
+
+        // No prior health-screening fields persisted on PatientForm; leave for current screening
         
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
@@ -631,22 +699,22 @@ public class PatientCheckInGUI {
         grid.setHgap(10);
         grid.setVgap(10);
         
-        grid.add(new Label("Waiting Area Assignment:"), 0, 0);
-        waitingAreaCombo = new ComboBox<>();
-        waitingAreaCombo.getItems().addAll(
-            "General Waiting Area", "Pediatric Waiting", "Private Room 1", 
-            "Private Room 2", "Exam Room 101", "Exam Room 102", "Lab Waiting"
-        );
-        waitingAreaCombo.setPromptText("Select waiting area");
-        grid.add(waitingAreaCombo, 1, 0);
-        
-        grid.add(new Label("Special Instructions:"), 0, 1);
+    grid.add(new Label("Special Instructions:"), 0, 0);
         specialInstructionsArea = new TextArea();
         specialInstructionsArea.setPromptText("Enter any special instructions for clinical staff");
         specialInstructionsArea.setPrefRowCount(3);
-        grid.add(specialInstructionsArea, 1, 1);
+        grid.add(specialInstructionsArea, 1, 0);
         
         stepContent.getChildren().add(grid);
+
+        // Prefill any session notes (reason) that may have been added when opening GUI
+        if (checkInWorkflow != null && checkInWorkflow.getCurrentSession() != null) {
+            java.util.List<String> notes = checkInWorkflow.getCurrentSession().getSessionNotes();
+            if (notes != null && !notes.isEmpty()) {
+                String joined = String.join("\n", notes);
+                specialInstructionsArea.setText(joined + (specialInstructionsArea.getText().isEmpty() ? "" : "\n") + specialInstructionsArea.getText());
+            }
+        }
         
         // Add summary section
         Label summaryLabel = new Label("Check-In Summary:");
@@ -718,10 +786,7 @@ public class PatientCheckInGUI {
                 }
                 break;
             case 7:
-                if (waitingAreaCombo.getValue() == null) {
-                    showAlert("Validation Error", "Please select a waiting area assignment.");
-                    return false;
-                }
+                // No waiting area selection required; special instructions are optional
                 break;
         }
         return true;
@@ -789,9 +854,12 @@ public class PatientCheckInGUI {
     
     private void completeCheckIn() {
         try {
+            String waitingAreaValue = (waitingAreaCombo != null && waitingAreaCombo.getValue() != null)
+                    ? waitingAreaCombo.getValue() : null;
+
             boolean success = checkInWorkflow.completeCheckIn(
                 LocalDateTime.now(),
-                waitingAreaCombo.getValue(),
+                waitingAreaValue,
                 specialInstructionsArea.getText().trim()
             );
             
@@ -799,7 +867,7 @@ public class PatientCheckInGUI {
                 showAlert("Check-In Complete", 
                     "Patient check-in completed successfully!\n\n" +
                     "Patient: " + checkInWorkflow.getPatient().getFullName() + "\n" +
-                    "Waiting Area: " + waitingAreaCombo.getValue());
+                    "Waiting Area: " + (waitingAreaValue != null ? waitingAreaValue : "Not assigned"));
                 
                 // Close the window
                 stage.close();
@@ -856,90 +924,90 @@ public class PatientCheckInGUI {
         try {
             // Always try to collect data from current step fields, even if validation hasn't passed
             switch (currentStep) {
-                case 1:
+                case 1 -> {
                     if (firstNameField != null && lastNameField != null && dobField != null) {
                         checkInWorkflow.validatePatientIdentification(
-                            firstNameField.getText().trim(),
-                            lastNameField.getText().trim(),
-                            dobField.getText().trim()
+                                firstNameField.getText().trim(),
+                                lastNameField.getText().trim(),
+                                dobField.getText().trim()
                         );
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     if (insuranceProviderField != null && policyNumberField != null) {
                         checkInWorkflow.verifyInsuranceCoverage(
-                            insuranceProviderField.getText().trim(),
-                            policyNumberField.getText().trim(),
-                            groupNumberField != null ? groupNumberField.getText().trim() : ""
+                                insuranceProviderField.getText().trim(),
+                                policyNumberField.getText().trim(),
+                                groupNumberField != null ? groupNumberField.getText().trim() : ""
                         );
                     }
-                    break;
-                case 3:
-                    if (appointmentDatePicker != null && appointmentTimeField != null && 
-                        doctorNameField != null && appointmentTypeCombo != null) {
+                }
+                case 3 -> {
+                    if (appointmentDatePicker != null && appointmentTimeField != null &&
+                            doctorNameField != null && appointmentTypeCombo != null) {
                         try {
                             LocalDateTime appointmentDateTime = LocalDateTime.of(
-                                appointmentDatePicker.getValue() != null ? appointmentDatePicker.getValue() : LocalDate.now(),
-                                appointmentTimeField.getText().trim().isEmpty() ? 
-                                    java.time.LocalTime.now() : 
-                                    java.time.LocalTime.parse(appointmentTimeField.getText().trim())
+                                    appointmentDatePicker.getValue() != null ? appointmentDatePicker.getValue() : LocalDate.now(),
+                                    appointmentTimeField.getText().trim().isEmpty() ?
+                                            java.time.LocalTime.now() :
+                                            java.time.LocalTime.parse(appointmentTimeField.getText().trim())
                             );
                             checkInWorkflow.confirmScheduledAppointment(
-                                appointmentDateTime,
-                                doctorNameField.getText().trim(),
-                                appointmentTypeCombo.getValue() != null ? appointmentTypeCombo.getValue() : "General"
+                                    appointmentDateTime,
+                                    doctorNameField.getText().trim(),
+                                    appointmentTypeCombo.getValue() != null ? appointmentTypeCombo.getValue() : "General"
                             );
                         } catch (Exception timeParseException) {
                             // Skip if time parsing fails
                         }
                     }
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     if (phoneField != null || emailField != null || addressField != null || emergencyContactField != null) {
                         checkInWorkflow.updateContactInformation(
-                            phoneField != null ? phoneField.getText().trim() : "",
-                            emailField != null ? emailField.getText().trim() : "",
-                            addressField != null ? addressField.getText().trim() : "",
-                            emergencyContactField != null ? emergencyContactField.getText().trim() : ""
+                                phoneField != null ? phoneField.getText().trim() : "",
+                                emailField != null ? emailField.getText().trim() : "",
+                                addressField != null ? addressField.getText().trim() : "",
+                                emergencyContactField != null ? emergencyContactField.getText().trim() : ""
                         );
                     }
-                    break;
-                case 5:
+                }
+                case 5 -> {
                     if (copayAmountField != null && paymentMethodCombo != null) {
                         try {
-                            double amount = copayAmountField.getText().trim().isEmpty() ? 
-                                0.0 : Double.parseDouble(copayAmountField.getText().trim());
+                            double amount = copayAmountField.getText().trim().isEmpty() ?
+                                    0.0 : Double.parseDouble(copayAmountField.getText().trim());
                             checkInWorkflow.processPayment(
-                                amount,
-                                paymentMethodCombo.getValue() != null ? paymentMethodCombo.getValue() : "No Payment Required",
-                                referenceNumberField != null ? referenceNumberField.getText().trim() : ""
+                                    amount,
+                                    paymentMethodCombo.getValue() != null ? paymentMethodCombo.getValue() : "No Payment Required",
+                                    referenceNumberField != null ? referenceNumberField.getText().trim() : ""
                             );
                         } catch (NumberFormatException numException) {
                             // Skip if amount parsing fails
                         }
                     }
-                    break;
-                case 6:
+                }
+                case 6 -> {
                     if (temperatureField != null) {
                         try {
-                            double temperature = temperatureField.getText().trim().isEmpty() ? 
-                                98.6 : Double.parseDouble(temperatureField.getText().trim());
+                            double temperature = temperatureField.getText().trim().isEmpty() ?
+                                    98.6 : Double.parseDouble(temperatureField.getText().trim());
                             checkInWorkflow.conductHealthScreening(
-                                temperature,
-                                symptomsArea != null ? symptomsArea.getText().trim() : "",
-                                recentTravelCheckBox != null ? recentTravelCheckBox.isSelected() : false,
-                                covidExposureCheckBox != null ? covidExposureCheckBox.isSelected() : false
+                                    temperature,
+                                    symptomsArea != null ? symptomsArea.getText().trim() : "",
+                                    recentTravelCheckBox != null ? recentTravelCheckBox.isSelected() : false,
+                                    covidExposureCheckBox != null ? covidExposureCheckBox.isSelected() : false
                             );
                         } catch (NumberFormatException tempException) {
                             // Skip if temperature parsing fails
                         }
                     }
-                    break;
-                case 7:
-                    // Don't complete check-in automatically, just collect the data
-                    break;
+                }
+                case 7 -> {
+                }
             }
-        } catch (Exception e) {
+            // Don't complete check-in automatically, just collect the data
+                    } catch (Exception e) {
             // Log but don't fail the save operation
             LOGGER.info("Some form data could not be collected: " + e.getMessage());
         }
