@@ -104,6 +104,8 @@ public class PatientFormGUI {
         Scene scene = new Scene(mainLayout, 900, 750);
         stage.setScene(scene);
         stage.centerOnScreen();
+    // Apply theme if dark mode is enabled
+    Theme.applyScene(scene);
         
         // Load existing patient data if any
         loadPatientData();
@@ -202,6 +204,18 @@ public class PatientFormGUI {
             "-fx-border-color: #e8f5e8;" +
             "-fx-border-width: 1;"
         );
+
+        // If dark mode is enabled, use a slightly lighter dark card for this section
+        if (Theme.isDarkMode()) {
+            section.setStyle(
+                "-fx-background-color: #1a1a1a;" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
+                "-fx-border-color: #2b2b2b;" +
+                "-fx-border-width: 1;"
+            );
+        }
         
         // Section header
         Label sectionHeader = new Label("👤 Patient Demographics");
@@ -360,6 +374,18 @@ public class PatientFormGUI {
             "-fx-border-color: #e8f5e8;" +
             "-fx-border-width: 1;"
         );
+
+        // Dark mode: use a darker card color for patient photo container
+        if (Theme.isDarkMode()) {
+            section.setStyle(
+                "-fx-background-color: #1a1a1a;" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
+                "-fx-border-color: #2b2b2b;" +
+                "-fx-border-width: 1;"
+            );
+        }
         
         // Section header
         Label sectionHeader = new Label("📷 Patient Photo");
@@ -463,6 +489,18 @@ public class PatientFormGUI {
             "-fx-border-color: #e8f5e8;" +
             "-fx-border-width: 1;"
         );
+
+        // Dark mode: use same darker card for medical history
+        if (Theme.isDarkMode()) {
+            section.setStyle(
+                "-fx-background-color: #1a1a1a;" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
+                "-fx-border-color: #2b2b2b;" +
+                "-fx-border-width: 1;"
+            );
+        }
         
         // Section header
         Label sectionHeader = new Label("🏥 Medical History");

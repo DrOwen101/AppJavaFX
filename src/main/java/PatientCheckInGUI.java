@@ -153,8 +153,10 @@ public class PatientCheckInGUI {
         loadCurrentStep();
         
         // Create scene and show
-        Scene scene = new Scene(scrollPane, 900, 800);
-        stage.setScene(scene);
+    Scene scene = new Scene(scrollPane, 900, 800);
+    stage.setScene(scene);
+    // Apply dark theme if enabled
+    Theme.applyScene(scene);
         stage.show();
     }
     

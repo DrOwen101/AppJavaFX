@@ -81,6 +81,8 @@ public class AppointmentManagerGUI {
         
         Scene scene = new Scene(mainLayout, 800, 600);
         stage.setScene(scene);
+    // Apply dark theme if enabled
+    Theme.applyScene(scene);
         
         // Load existing appointment data
         refreshAppointmentData();
