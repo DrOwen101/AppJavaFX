@@ -74,8 +74,8 @@ public class Main extends Application {
     header.setPadding(new Insets(20));
 
     Label titleLabel = new Label("HealthCare Pro");
-    titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
     titleLabel.getStyleClass().add("title-label");
+    titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
 
     Label subtitleLabel = new Label("Patient Management System");
     subtitleLabel.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 16));

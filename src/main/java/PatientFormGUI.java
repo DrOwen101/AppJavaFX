@@ -123,11 +123,11 @@ public class PatientFormGUI {
         
         Label titleLabel = new Label("Patient Information Form");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 24));
-        titleLabel.setStyle("-fx-text-fill: white;");
+        titleLabel.getStyleClass().add("title-label");
         
         Label subtitleLabel = new Label("Complete patient demographics and medical history");
         subtitleLabel.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 14));
-        subtitleLabel.setStyle("-fx-text-fill: #c8e6c9;");
+        subtitleLabel.getStyleClass().add("subtitle-label");
         
         titleSection.getChildren().addAll(titleLabel, subtitleLabel);
         
@@ -355,7 +355,7 @@ public class PatientFormGUI {
         // Section header
         Label sectionHeader = new Label("📷 Patient Photo");
         sectionHeader.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
-        sectionHeader.setStyle("-fx-text-fill: #1b5e20;");
+        sectionHeader.getStyleClass().add("subtitle-label");
         
         // Picture container
         VBox pictureContainer = new VBox(15);
@@ -367,7 +367,7 @@ public class PatientFormGUI {
         patientImageView.setFitHeight(150);
         patientImageView.setPreserveRatio(true);
         patientImageView.setStyle(
-            "-fx-background-color: #f1f8e9;" +
+            "-fx-background-color: #cfcfcf;" +
             "-fx-background-radius: 75;" +
             "-fx-border-radius: 75;" +
             "-fx-border-color: #4caf50;" +
@@ -386,17 +386,7 @@ public class PatientFormGUI {
         
         // Upload button
         Button uploadButton = new Button("📁 Choose Photo");
-        uploadButton.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12 24;" +
-            "-fx-background-radius: 25;" +
-            "-fx-border-radius: 25;" +
-            "-fx-cursor: hand;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);"
-        );
+        uploadButton.getStyleClass().add("modern-button");
         
         // Button hover effect
         uploadButton.setOnMouseEntered(e -> uploadButton.setStyle(
@@ -446,14 +436,7 @@ public class PatientFormGUI {
     private VBox createModernMedicalHistorySection() {
         VBox section = new VBox(20);
         section.setPadding(new Insets(25));
-        section.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
-            "-fx-border-color: #e8f5e8;" +
-            "-fx-border-width: 1;"
-        );
+        section.getStyleClass().add("section");
         
         // Section header
         Label sectionHeader = new Label("🏥 Medical History");
@@ -493,17 +476,11 @@ public class PatientFormGUI {
                                          TextField inputField, String buttonText, Runnable addAction) {
         VBox box = new VBox(15);
         box.setPadding(new Insets(15));
-        box.setStyle(
-            "-fx-background-color: #f8fdf8;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-border-color: #c8e6c9;" +
-            "-fx-border-width: 1;"
-        );
+        box.getStyleClass().add("section");
         
         Label titleLabel = new Label(title);
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
-        titleLabel.setStyle("-fx-text-fill: #2e7d32;");
+        titleLabel.getStyleClass().add("title-label");
         
         listView.setPrefHeight(120);
         listView.setPrefWidth(220);
@@ -519,16 +496,7 @@ public class PatientFormGUI {
         styleComponent(inputField);
         
         Button addButton = new Button("➕ " + buttonText);
-        addButton.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 8 16;" +
-            "-fx-background-radius: 20;" +
-            "-fx-border-radius: 20;" +
-            "-fx-cursor: hand;"
-        );
+        addButton.getStyleClass().add("modern-button");
         addButton.setOnAction(e -> addAction.run());
         
         Button removeButton = new Button("🗑️ Remove");

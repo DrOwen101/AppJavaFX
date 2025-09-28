@@ -133,8 +133,7 @@ public class AppointmentManagerGUI {
         
         Button scheduleButton = new Button("Schedule Appointment");
         scheduleButton.setOnAction(e -> scheduleNewAppointment());
-        scheduleButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-        
+        scheduleButton.getStyleClass().add("modern-button");
         section.getChildren().addAll(titleLabel, grid, scheduleButton);
         return section;
     }
@@ -154,13 +153,14 @@ public class AppointmentManagerGUI {
         
         Button cancelButton = new Button("Cancel Selected");
         cancelButton.setOnAction(e -> cancelSelectedAppointment());
-        cancelButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+        cancelButton.getStyleClass().add("modern-button");
         
         Button completeButton = new Button("Mark as Completed");
         completeButton.setOnAction(e -> completeSelectedAppointment());
-        completeButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+        completeButton.getStyleClass().add("modern-button");
         
         Button refreshButton = new Button("Refresh");
+        refreshButton.getStyleClass().add("modern-button");
         refreshButton.setOnAction(e -> refreshAppointmentData());
         
         buttonBox.getChildren().addAll(cancelButton, completeButton, refreshButton);
@@ -180,6 +180,7 @@ public class AppointmentManagerGUI {
         appointmentHistoryListView.setPrefHeight(350);
         
         Button refreshButton = new Button("Refresh History");
+        refreshButton.getStyleClass().add("modern-button");
         refreshButton.setOnAction(e -> refreshAppointmentData());
         
         section.getChildren().addAll(titleLabel, appointmentHistoryListView, refreshButton);
@@ -191,13 +192,14 @@ public class AppointmentManagerGUI {
         section.setPadding(new Insets(20));
         
         Label titleLabel = new Label("Appointment Reports");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        titleLabel.getStyleClass().add("title-label");
         
         appointmentReportsTextArea = new TextArea();
         appointmentReportsTextArea.setPrefHeight(350);
         appointmentReportsTextArea.setEditable(false);
         
         Button refreshButton = new Button("Refresh Reports");
+        refreshButton.getStyleClass().add("modern-button");
         refreshButton.setOnAction(e -> refreshReports());
         
         section.getChildren().addAll(titleLabel, appointmentReportsTextArea, refreshButton);

@@ -46,3 +46,12 @@
     -fx-scale-x: 1.02;
     -fx-scale-y: 1.02;
 }
+
+.card-background {
+  -fx-background-color: #363636;
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);
+  -fx-border-color: #e8f5e8;
+  -fx-border-width: 1;
+}
