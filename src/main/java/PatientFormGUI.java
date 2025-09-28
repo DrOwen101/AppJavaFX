@@ -849,7 +849,7 @@ public class PatientFormGUI {
             updateCurrentPatientFromForm();
             
             // Create and show check-in GUI - it manages its own stage
-            new PatientCheckInGUI(currentPatient);
+            new PatientCheckInGUI(currentPatient).show();
             
         } catch (Exception e) {
             LOGGER.warning(() -> "Error starting check-in: " + e.getMessage());
@@ -880,14 +880,6 @@ public class PatientFormGUI {
         updatePatientMedicalHistory();
     }
     
-    private void openAppointmentManager() {
-        // Save current form data first
-        savePatient();
-        
-        // Open appointment management window
-        AppointmentManagerGUI appointmentGUI = new AppointmentManagerGUI(currentPatient);
-        appointmentGUI.show();
-    }
     
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

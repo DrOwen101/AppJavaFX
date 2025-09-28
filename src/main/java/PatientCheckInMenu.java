@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -276,7 +277,7 @@ public class PatientCheckInMenu {
         selectBtn.setOnAction(e -> {
             PatientDataObject selected = resultsTable.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                LOGGER.info("Selected patient: " + selected.getFullName());
+                LOGGER.log(Level.INFO, "Selected patient: {0}", selected.getFullName());
                 // Create NewPatient from PatientDataObject and start check-in GUI with it
                 NewPatient np = convertToNewPatient(selected);
                 PatientCheckInGUI gui = new PatientCheckInGUI(np, true);

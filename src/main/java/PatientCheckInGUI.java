@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.geometry.Insets;
@@ -411,27 +412,13 @@ public class PatientCheckInGUI {
         contentArea.getChildren().clear();
         
         switch (currentStep) {
-            case 1:
-                loadPatientIdentificationStep();
-                break;
-            case 2:
-                loadInsuranceVerificationStep();
-                break;
-            case 3:
-                loadAppointmentConfirmationStep();
-                break;
-            case 4:
-                loadContactInformationStep();
-                break;
-            case 5:
-                loadPaymentProcessingStep();
-                break;
-            case 6:
-                loadHealthScreeningStep();
-                break;
-            case 7:
-                loadCompletionStep();
-                break;
+            case 1 -> loadPatientIdentificationStep();
+            case 2 -> loadInsuranceVerificationStep();
+            case 3 -> loadAppointmentConfirmationStep();
+            case 4 -> loadContactInformationStep();
+            case 5 -> loadPaymentProcessingStep();
+            case 6 -> loadHealthScreeningStep();
+            case 7 -> loadCompletionStep();
         }
         
         updateButtons();
@@ -748,106 +735,100 @@ public class PatientCheckInGUI {
     
     private boolean validateCurrentStep() {
         switch (currentStep) {
-            case 1:
-                if (firstNameField.getText().trim().isEmpty() || 
-                    lastNameField.getText().trim().isEmpty() || 
-                    dobField.getText().trim().isEmpty()) {
+            case 1 -> {
+                if (firstNameField.getText().trim().isEmpty() ||
+                        lastNameField.getText().trim().isEmpty() ||
+                        dobField.getText().trim().isEmpty()) {
                     showAlert("Validation Error", "Please fill in all required identification fields.");
                     return false;
                 }
-                break;
-            case 2:
-                if (insuranceProviderField.getText().trim().isEmpty() || 
-                    policyNumberField.getText().trim().isEmpty()) {
+            }
+            case 2 -> {
+                if (insuranceProviderField.getText().trim().isEmpty() ||
+                        policyNumberField.getText().trim().isEmpty()) {
                     showAlert("Validation Error", "Please fill in insurance provider and policy number.");
                     return false;
                 }
-                break;
-            case 3:
-                if (appointmentDatePicker.getValue() == null || 
-                    appointmentTimeField.getText().trim().isEmpty() ||
-                    doctorNameField.getText().trim().isEmpty() ||
-                    appointmentTypeCombo.getValue() == null) {
+            }
+            case 3 -> {
+                if (appointmentDatePicker.getValue() == null ||
+                        appointmentTimeField.getText().trim().isEmpty() ||
+                        doctorNameField.getText().trim().isEmpty() ||
+                        appointmentTypeCombo.getValue() == null) {
                     showAlert("Validation Error", "Please fill in all appointment details.");
                     return false;
                 }
-                break;
-            case 5:
-                if (copayAmountField.getText().trim().isEmpty() || 
-                    paymentMethodCombo.getValue() == null) {
+            }
+            case 5 -> {
+                if (copayAmountField.getText().trim().isEmpty() ||
+                        paymentMethodCombo.getValue() == null) {
                     showAlert("Validation Error", "Please enter copay amount and select payment method.");
                     return false;
                 }
-                break;
-            case 6:
+            }
+            case 6 -> {
                 if (temperatureField.getText().trim().isEmpty()) {
                     showAlert("Validation Error", "Please enter temperature reading.");
                     return false;
                 }
-                break;
-            case 7:
-                // No waiting area selection required; special instructions are optional
-                break;
+            }
+            case 7 -> {
+            }
         }
+        // No waiting area selection required; special instructions are optional
         return true;
     }
     
     private void processCurrentStep() {
         try {
             switch (currentStep) {
-                case 1:
-                    checkInWorkflow.validatePatientIdentification(
+                case 1 -> checkInWorkflow.validatePatientIdentification(
                         firstNameField.getText().trim(),
                         lastNameField.getText().trim(),
                         dobField.getText().trim()
                     );
-                    break;
-                case 2:
-                    checkInWorkflow.verifyInsuranceCoverage(
+                case 2 -> checkInWorkflow.verifyInsuranceCoverage(
                         insuranceProviderField.getText().trim(),
                         policyNumberField.getText().trim(),
                         groupNumberField.getText().trim()
                     );
-                    break;
-                case 3:
+                case 3 -> {
                     LocalDateTime appointmentDateTime = LocalDateTime.of(
-                        appointmentDatePicker.getValue(),
-                        java.time.LocalTime.parse(appointmentTimeField.getText().trim())
+                            appointmentDatePicker.getValue(),
+                            java.time.LocalTime.parse(appointmentTimeField.getText().trim())
                     );
                     checkInWorkflow.confirmScheduledAppointment(
-                        appointmentDateTime,
-                        doctorNameField.getText().trim(),
-                        appointmentTypeCombo.getValue()
+                            appointmentDateTime,
+                            doctorNameField.getText().trim(),
+                            appointmentTypeCombo.getValue()
                     );
-                    break;
-                case 4:
-                    checkInWorkflow.updateContactInformation(
+                }
+                case 4 -> checkInWorkflow.updateContactInformation(
                         phoneField.getText().trim(),
                         emailField.getText().trim(),
                         addressField.getText().trim(),
                         emergencyContactField.getText().trim()
                     );
-                    break;
-                case 5:
+                case 5 -> {
                     double amount = Double.parseDouble(copayAmountField.getText().trim());
                     checkInWorkflow.processPayment(
-                        amount,
-                        paymentMethodCombo.getValue(),
-                        referenceNumberField.getText().trim()
+                            amount,
+                            paymentMethodCombo.getValue(),
+                            referenceNumberField.getText().trim()
                     );
-                    break;
-                case 6:
+                }
+                case 6 -> {
                     double temperature = Double.parseDouble(temperatureField.getText().trim());
                     checkInWorkflow.conductHealthScreening(
-                        temperature,
-                        symptomsArea.getText().trim(),
-                        recentTravelCheckBox.isSelected(),
-                        covidExposureCheckBox.isSelected()
+                            temperature,
+                            symptomsArea.getText().trim(),
+                            recentTravelCheckBox.isSelected(),
+                            covidExposureCheckBox.isSelected()
                     );
-                    break;
+                }
             }
-        } catch (Exception e) {
-            LOGGER.warning("Error processing step " + currentStep + ": " + e.getMessage());
+        } catch (NumberFormatException e) {
+            LOGGER.log(Level.WARNING, "Error processing step {0}: {1}", new Object[]{currentStep, e.getMessage()});
             showAlert("Processing Error", "Error processing step: " + e.getMessage());
         }
     }
@@ -865,8 +846,10 @@ public class PatientCheckInGUI {
             
             if (success) {
                 showAlert("Check-In Complete", 
-                    "Patient check-in completed successfully!\n\n" +
-                    "Patient: " + checkInWorkflow.getPatient().getFullName() + "\n" +
+                    """
+                    Patient check-in completed successfully!
+                    
+                    Patient: """ + checkInWorkflow.getPatient().getFullName() + "\n" +
                     "Waiting Area: " + (waitingAreaValue != null ? waitingAreaValue : "Not assigned"));
                 
                 // Close the window
@@ -875,7 +858,7 @@ public class PatientCheckInGUI {
                 showAlert("Error", "Failed to complete check-in. Please review all steps.");
             }
         } catch (Exception e) {
-            LOGGER.warning("Error completing check-in: " + e.getMessage());
+            LOGGER.log(Level.WARNING, "Error completing check-in: {0}", e.getMessage());
             showAlert("Error", "Error completing check-in: " + e.getMessage());
         }
     }
@@ -912,7 +895,7 @@ public class PatientCheckInGUI {
             }
             
         } catch (Exception e) {
-            LOGGER.warning("Error saving patient data: " + e.getMessage());
+            LOGGER.log(Level.WARNING, "Error saving patient data: {0}", e.getMessage());
             showAlert("Save Error", "Error saving patient data: " + e.getMessage());
         }
     }
@@ -1009,7 +992,7 @@ public class PatientCheckInGUI {
             // Don't complete check-in automatically, just collect the data
                     } catch (Exception e) {
             // Log but don't fail the save operation
-            LOGGER.info("Some form data could not be collected: " + e.getMessage());
+            LOGGER.log(Level.INFO, "Some form data could not be collected: {0}", e.getMessage());
         }
     }
     
@@ -1092,5 +1075,9 @@ public class PatientCheckInGUI {
     
     public CheckInWorkflow getCheckInWorkflow() {
         return checkInWorkflow;
+    }
+
+    public void setCheckInWorkflow(CheckInWorkflow checkInWorkflow) {
+        this.checkInWorkflow = checkInWorkflow;
     }
 }

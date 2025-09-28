@@ -164,7 +164,7 @@ public class Main extends Application {
     /**
      * Starts the patient check-in workflow with popup
      */
-    private void startCheckInWorkflow(Stage parentStage) {
+    private void startCheckInWorkflow(@SuppressWarnings("unused") Stage parentStage) {
         // Directly show the patient check-in menu (skip the ready popup)
         LOGGER.info("Opening check-in menu directly");
         PatientCheckInMenu menu = new PatientCheckInMenu();
@@ -183,9 +183,10 @@ public class Main extends Application {
         alert.setHeaderText("Patient Data Storage");
         
         if (storage.isEmpty()) {
-            alert.setContentText("No patients have been saved yet.\n\n" +
-                "Use 'Open Patient Form' or 'Start Patient Check-In' to add patients, " +
-                "then click 'Save and Leave Patient' to save them to storage.");
+            alert.setContentText("""
+                                 No patients have been saved yet.
+                                 
+                                 Use 'Open Patient Form' or 'Start Patient Check-In' to add patients, then click 'Save and Leave Patient' to save them to storage.""");
         } else {
             StringBuilder content = new StringBuilder();
             content.append(storage.getStorageStatistics()).append("\n");
