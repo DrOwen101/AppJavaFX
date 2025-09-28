@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -49,6 +51,7 @@ public class PatientCheckInGUI {
     private Button nextButton;
     private Button backButton;
     private Button completeButton;
+    private Button cancelButton;
     
     // Step 1: Patient Identification
     private TextField firstNameField;
@@ -404,7 +407,54 @@ public class PatientCheckInGUI {
         completeButton.setOnAction(e -> completeCheckIn());
         completeButton.setVisible(false);
         
-        buttonArea.getChildren().addAll(backButton, nextButton, completeButton);
+        // Modern Cancel Button
+        cancelButton = new Button("❌ Cancel");
+        cancelButton.setPrefSize(90, 35);
+        cancelButton.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #ff8a80, #f44336);" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-font-weight: normal;" +
+            "-fx-background-radius: 18;" +
+            "-fx-border-radius: 18;" +
+            "-fx-cursor: hand;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 1);"
+        );
+        
+        // Cancel button hover effect
+        cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #f44336, #d32f2f);" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-font-weight: normal;" +
+            "-fx-background-radius: 18;" +
+            "-fx-border-radius: 18;" +
+            "-fx-cursor: hand;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);" +
+            "-fx-scale-x: 1.03;" +
+            "-fx-scale-y: 1.03;"
+        ));
+        
+        cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #ff8a80, #f44336);" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-font-weight: normal;" +
+            "-fx-background-radius: 18;" +
+            "-fx-border-radius: 18;" +
+            "-fx-cursor: hand;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 1);" +
+            "-fx-scale-x: 1.0;" +
+            "-fx-scale-y: 1.0;"
+        ));
+        
+        cancelButton.setOnAction(e -> handleCancel());
+        
+        // Add spacer to push cancel button to the left side
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        buttonArea.getChildren().addAll(cancelButton, spacer, backButton, nextButton, completeButton);
     }
     
     private void loadCurrentStep() {
@@ -1055,6 +1105,19 @@ public class PatientCheckInGUI {
         alert.getDialogPane().setPrefSize(450, 300);
         
         alert.showAndWait();
+    }
+    
+    private void handleCancel() {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Cancel Check-In");
+        confirmAlert.setHeaderText("Are you sure you want to cancel the patient check-in?");
+        confirmAlert.setContentText("All entered information will be lost.");
+        
+        Optional<javafx.scene.control.ButtonType> result = confirmAlert.showAndWait();
+        if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
+            LOGGER.info("Patient check-in cancelled by user");
+            stage.close();
+        }
     }
     
     private void showAlert(String title, String message) {
