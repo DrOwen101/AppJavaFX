@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -11,13 +12,28 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main extends Application implements Darkmode{
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
+    //private Stage primaryStage; 
+    private VBox mainLayout;
+
+    //private boolean isDarkMode = false;
+
+    
+    //private VBox buttonContainer;
+    //private VBox mainLayout;
+
+    //Create darkmode
+    // Dark mode can be implemented using a boolean flag to switch styles.
+    // Use if statement to apply dark mode styles when the flag is true.
     @Override
     public void start(Stage primaryStage) {
+        // Register with ThemeManager for theme synchronization
+        ThemeManager.registerGui(this);
+        
         // Create main layout with modern styling
-        VBox mainLayout = new VBox(20);
+        this.mainLayout = new VBox(20);
         mainLayout.setAlignment(Pos.CENTER);
         mainLayout.setPadding(new Insets(40));
         mainLayout.setStyle(
@@ -73,8 +89,20 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
-        
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+
+        // Create Dark mode box
+        CheckBox darkModeBox = new CheckBox("Enable Dark Mode");
+        darkModeBox.setOnAction(e -> {
+            if (darkModeBox.isSelected()) {
+                // Apply dark mode styles
+                ThemeManager.setDarkMode(true);
+            } else {
+                // Revert to light mode styles
+                ThemeManager.setDarkMode(false);
+            }
+        });
+
+        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, darkModeBox);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
@@ -82,7 +110,14 @@ public class Main extends Application {
         primaryStage.setTitle("HealthCare Pro - Patient Management System");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
-        primaryStage.show();
+        
+        // Handle window close event to properly unregister from ThemeManager
+        primaryStage.setOnCloseRequest(e -> {
+            ThemeManager.unregisterGui(this);
+        });
+        
+        primaryStage.show(); 
+
     }
     
     /**
@@ -211,7 +246,29 @@ public class Main extends Application {
         alert.getDialogPane().setPrefSize(600, 400);
         
         alert.showAndWait();
+
+       
+        
     }
+
+    @Override
+    public void applyDarkMode() {
+        if (mainLayout != null) {
+            mainLayout.setStyle("-fx-background: linear-gradient(to bottom, #2c3e50, #19383cff);");
+            LOGGER.info("Dark mode applied to Main GUI");
+        }
+    }
+
+    @Override
+    public void applyLightMode() {
+        if (mainLayout != null) {
+            mainLayout.setStyle("-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);");
+            LOGGER.info("Light mode applied to Main GUI");
+        }
+    }
+
+        
+    
     
     public static void main(String[] args) {
         launch(args);

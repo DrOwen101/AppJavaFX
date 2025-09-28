@@ -27,7 +27,7 @@ import javafx.stage.Stage;
  * This window appears after the check-in popup and guides staff through
  * the complete patient check-in process using the CheckInWorkflow.
  */
-public class PatientCheckInGUI {
+public class PatientCheckInGUI implements Darkmode {
     
     private static final Logger LOGGER = Logger.getLogger(PatientCheckInGUI.class.getName());
     
@@ -47,6 +47,10 @@ public class PatientCheckInGUI {
     private Button nextButton;
     private Button backButton;
     private Button completeButton;
+    
+    // Components that need dynamic theming
+    private Label titleLabel;
+    private Button saveButton;
     
     // Step 1: Patient Identification
     private TextField firstNameField;
@@ -108,25 +112,25 @@ public class PatientCheckInGUI {
         stage = new Stage();
         stage.setTitle("Patient Check-In System");
         
-        // Create main layout with modern gradient background
+        // Create main layout with dark gradient background
         mainLayout = new VBox(20);
         mainLayout.setPadding(new Insets(25));
         mainLayout.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #e8f5e8, #f1f8e9);"
+            "-fx-background-color: linear-gradient(to bottom, #1a1a1a, #2d2d2d);"
         );
         
         // Create header section
         createHeaderSection();
         
-        // Create content area with modern card styling
+        // Create content area with light card styling
         contentArea = new VBox(15);
         contentArea.setPadding(new Insets(25));
         contentArea.setStyle(
             "-fx-background-color: white;" +
             "-fx-background-radius: 15;" +
             "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);" +
-            "-fx-border-color: #c8e6c9;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 5);" +
+            "-fx-border-color: #cccccc;" +
             "-fx-border-width: 1;"
         );
         
@@ -150,11 +154,28 @@ public class PatientCheckInGUI {
         );
         
         // Load first step
-        loadCurrentStep();
-        
+        loadCurrentStep(); 
+
         // Create scene and show
         Scene scene = new Scene(scrollPane, 900, 800);
         stage.setScene(scene);
+        
+        // Handle window close event to properly unregister from ThemeManager
+        stage.setOnCloseRequest(e -> {
+            ThemeManager.unregisterGui(this);
+        });
+        
+        // Register with ThemeManager AFTER everything is initialized (including scene)
+        LOGGER.info("PatientCheckInGUI: Registering with ThemeManager (UI fully initialized)");
+        ThemeManager.registerGui(this);
+        
+        // Apply initial theme styles AFTER everything is fully loaded
+        if (ThemeManager.isDarkMode()) {
+            applyDarkMode();
+        } else {
+            applyLightMode();
+        }
+        
         stage.show();
     }
     
@@ -174,30 +195,22 @@ public class PatientCheckInGUI {
         topRow.setSpacing(20);
         
         // Title with icon
-        Label titleLabel = new Label("🏥 Patient Check-In System");
+        titleLabel = new Label("🏥 Patient Check-In System");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 24));
-        titleLabel.setStyle("-fx-text-fill: white;");
         
         // Spacer to push save button to the right
         Region spacer = new Region();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
         
         // Create modern "Save and Leave Patient" button for top right
-        Button saveAndLeaveButton = new Button("💾 Save and Leave Patient");
-        saveAndLeaveButton.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
-        saveAndLeaveButton.setPrefSize(220, 45);
-        saveAndLeaveButton.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #ffa726, #ff9800);" +
-            "-fx-text-fill: white;" +
-            "-fx-background-radius: 22;" +
-            "-fx-border-radius: 22;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" +
-            "-fx-cursor: hand;"
-        );
+        saveButton = new Button("💾 Save and Leave Patient");
+        saveButton.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
+        saveButton.setPrefSize(220, 45);
+        // Initial styling will be set by theme methods
         
         // Add modern hover effect
-        saveAndLeaveButton.setOnMouseEntered(e -> 
-            saveAndLeaveButton.setStyle(
+        saveButton.setOnMouseEntered(e -> 
+            saveButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ff9800, #f57c00);" +
                 "-fx-text-fill: white;" +
                 "-fx-background-radius: 22;" +
@@ -209,8 +222,8 @@ public class PatientCheckInGUI {
             )
         );
         
-        saveAndLeaveButton.setOnMouseExited(e -> 
-            saveAndLeaveButton.setStyle(
+        saveButton.setOnMouseExited(e -> 
+            saveButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ffa726, #ff9800);" +
                 "-fx-text-fill: white;" +
                 "-fx-background-radius: 22;" +
@@ -222,10 +235,10 @@ public class PatientCheckInGUI {
             )
         );
         
-        topRow.getChildren().addAll(titleLabel, spacer, saveAndLeaveButton);
+        topRow.getChildren().addAll(titleLabel, spacer, saveButton);
         
         // Set up save button action
-        saveAndLeaveButton.setOnAction(e -> saveAndLeavePatient());
+        saveButton.setOnAction(e -> saveAndLeavePatient());
         
         // Create step info section
         VBox stepInfo = new VBox(5);
@@ -233,11 +246,11 @@ public class PatientCheckInGUI {
         
         stepLabel = new Label();
         stepLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        stepLabel.setStyle("-fx-text-fill: white;");
+        // Text color will be set by theme methods
         
         progressLabel = new Label();
         progressLabel.setFont(Font.font("Arial", 12));
-        progressLabel.setStyle("-fx-text-fill: #cce7ff;");
+        // Text color will be set by theme methods
         
         stepInfo.getChildren().addAll(stepLabel, progressLabel);
         
@@ -428,6 +441,13 @@ public class PatientCheckInGUI {
         
         stepLabel.setText("Step " + currentStep + ": " + stepTitles[currentStep]);
         progressLabel.setText("Progress: " + currentStep + " of " + totalSteps + " steps completed");
+        
+        // Reapply theme styles after updating header content
+        if (ThemeManager.isDarkMode()) {
+            applyDarkThemeStyles();
+        } else {
+            applyLightThemeStyles();
+        }
     }
     
     private void updateButtons() {
@@ -1019,10 +1039,422 @@ public class PatientCheckInGUI {
     }
     
     public void close() {
+        // Unregister from ThemeManager before closing
+        ThemeManager.unregisterGui(this);
         stage.close();
     }
     
     public CheckInWorkflow getCheckInWorkflow() {
         return checkInWorkflow;
+    }
+    
+    /**
+     * Style all labels in the content area with the specified color
+     * This ensures ALL form labels remain consistently colored
+     */
+    private void styleAllLabelsInContentArea(String textColor) {
+        if (contentArea != null) {
+            styleLabelsInNode(contentArea, textColor);
+            LOGGER.info("PatientCheckInGUI: Applied " + textColor + " color to all labels in content area");
+        }
+    }
+    
+    /**
+     * Recursively style all Label nodes within a given parent node
+     */
+    private void styleLabelsInNode(javafx.scene.Node node, String textColor) {
+        if (node instanceof Label) {
+            Label label = (Label) node;
+            label.setStyle("-fx-text-fill: " + textColor + " !important;");
+        } else if (node instanceof javafx.scene.Parent) {
+            javafx.scene.Parent parent = (javafx.scene.Parent) node;
+            for (javafx.scene.Node child : parent.getChildrenUnmodifiable()) {
+                styleLabelsInNode(child, textColor);
+            }
+        }
+    }
+    
+    /**
+     * Apply dark theme styles to specific components
+     */
+    private void applyDarkThemeStyles() {
+        LOGGER.info("PatientCheckInGUI: Applying dark theme styles to components");
+        
+        if (titleLabel != null) {
+            titleLabel.setStyle("-fx-text-fill: white !important;");
+            LOGGER.info("PatientCheckInGUI: Applied white text to titleLabel");
+        } else {
+            LOGGER.warning("PatientCheckInGUI: titleLabel is null!");
+        }
+        
+        if (stepLabel != null) {
+            stepLabel.setStyle("-fx-text-fill: white !important;");
+            LOGGER.info("PatientCheckInGUI: Applied white text to stepLabel: " + stepLabel.getText());
+        } else {
+            LOGGER.warning("PatientCheckInGUI: stepLabel is null!");
+        }
+        
+        if (progressLabel != null) {
+            progressLabel.setStyle("-fx-text-fill: #cce7ff !important;");
+            LOGGER.info("PatientCheckInGUI: Applied light blue text to progressLabel: " + progressLabel.getText());
+        } else {
+            LOGGER.warning("PatientCheckInGUI: progressLabel is null!");
+        }
+        
+        if (saveButton != null) {
+            saveButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #ffa726, #ff9800);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" +
+                "-fx-cursor: hand;"
+            );
+            
+            // Update hover effects for dark theme
+            saveButton.setOnMouseEntered(e -> 
+                saveButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #ff9800, #f57c00);" +
+                    "-fx-text-fill: white;" +
+                    "-fx-background-radius: 22;" +
+                    "-fx-border-radius: 22;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 4);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-scale-x: 1.02;" +
+                    "-fx-scale-y: 1.02;"
+                )
+            );
+            
+            saveButton.setOnMouseExited(e -> 
+                saveButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #ffa726, #ff9800);" +
+                    "-fx-text-fill: white;" +
+                    "-fx-background-radius: 22;" +
+                    "-fx-border-radius: 22;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-scale-x: 1.0;" +
+                    "-fx-scale-y: 1.0;"
+                )
+            );
+        }
+        
+        if (backButton != null) {
+            backButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #6c757d, #5a6268);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);"
+            );
+            
+            backButton.setOnMouseEntered(e -> backButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #5a6268, #495057);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+                "-fx-scale-x: 1.05;" +
+                "-fx-scale-y: 1.05;"
+            ));
+            
+            backButton.setOnMouseExited(e -> backButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #6c757d, #5a6268);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+                "-fx-scale-x: 1.0;" +
+                "-fx-scale-y: 1.0;"
+            ));
+        }
+        
+        if (nextButton != null) {
+            nextButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);"
+            );
+            
+            nextButton.setOnMouseEntered(e -> nextButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+                "-fx-scale-x: 1.05;" +
+                "-fx-scale-y: 1.05;"
+            ));
+            
+            nextButton.setOnMouseExited(e -> nextButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+                "-fx-scale-x: 1.0;" +
+                "-fx-scale-y: 1.0;"
+            ));
+        }
+    }
+    
+    /**
+     * Apply light theme styles to specific components
+     */
+    private void applyLightThemeStyles() {
+        LOGGER.info("PatientCheckInGUI: Applying light theme styles to components");
+        
+        if (titleLabel != null) {
+            titleLabel.setStyle("-fx-text-fill: #1b5e20 !important;"); // Dark green for light theme
+            LOGGER.info("PatientCheckInGUI: Applied dark green text to titleLabel");
+        } else {
+            LOGGER.warning("PatientCheckInGUI: titleLabel is null!");
+        }
+        
+        if (stepLabel != null) {
+            stepLabel.setStyle("-fx-text-fill: #1b5e20 !important;"); // Dark text for light theme
+            LOGGER.info("PatientCheckInGUI: Applied dark green text to stepLabel: " + stepLabel.getText());
+        } else {
+            LOGGER.warning("PatientCheckInGUI: stepLabel is null!");
+        }
+        
+        if (progressLabel != null) {
+            progressLabel.setStyle("-fx-text-fill: #0d47a1 !important;"); // Dark blue for light theme
+            LOGGER.info("PatientCheckInGUI: Applied dark blue text to progressLabel: " + progressLabel.getText());
+        } else {
+            LOGGER.warning("PatientCheckInGUI: progressLabel is null!");
+        }
+        
+        if (saveButton != null) {
+            saveButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #ffa726, #ff9800);" +
+                "-fx-text-fill: #1b5e20;" + // Dark text for light theme
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" +
+                "-fx-cursor: hand;"
+            );
+            
+            // Update hover effects for light theme
+            saveButton.setOnMouseEntered(e -> 
+                saveButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #ff9800, #f57c00);" +
+                    "-fx-text-fill: #1b5e20;" + // Dark text for light theme
+                    "-fx-background-radius: 22;" +
+                    "-fx-border-radius: 22;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 4);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-scale-x: 1.02;" +
+                    "-fx-scale-y: 1.02;"
+                )
+            );
+            
+            saveButton.setOnMouseExited(e -> 
+                saveButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #ffa726, #ff9800);" +
+                    "-fx-text-fill: #1b5e20;" + // Dark text for light theme
+                    "-fx-background-radius: 22;" +
+                    "-fx-border-radius: 22;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-scale-x: 1.0;" +
+                    "-fx-scale-y: 1.0;"
+                )
+            );
+        }
+        
+        if (backButton != null) {
+            backButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #6c757d, #5a6268);" +
+                "-fx-text-fill: white;" + // Keep white text on gray background
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);"
+            );
+            
+            backButton.setOnMouseEntered(e -> backButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #5a6268, #495057);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+                "-fx-scale-x: 1.05;" +
+                "-fx-scale-y: 1.05;"
+            ));
+            
+            backButton.setOnMouseExited(e -> backButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #6c757d, #5a6268);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+                "-fx-scale-x: 1.0;" +
+                "-fx-scale-y: 1.0;"
+            ));
+        }
+        
+        if (nextButton != null) {
+            nextButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+                "-fx-text-fill: white;" + // Keep white text on green background
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);"
+            );
+            
+            nextButton.setOnMouseEntered(e -> nextButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 3);" +
+                "-fx-scale-x: 1.05;" +
+                "-fx-scale-y: 1.05;"
+            ));
+            
+            nextButton.setOnMouseExited(e -> nextButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 22;" +
+                "-fx-border-radius: 22;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
+                "-fx-scale-x: 1.0;" +
+                "-fx-scale-y: 1.0;"
+            ));
+        }
+    }
+
+    @Override
+    public void applyDarkMode() {
+        LOGGER.info("PatientCheckInGUI: applyDarkMode() called");
+        
+        if (mainLayout == null || stage == null || stage.getScene() == null) {
+            LOGGER.warning("PatientCheckInGUI: Cannot apply dark mode - UI components not initialized");
+            return;
+        }
+        
+        // Apply dark theme - ONLY change page background, keep content box white
+        mainLayout.setStyle("-fx-background-color: #1a1a1a;");
+        
+        // Keep content area WHITE in dark mode with dark text for visibility
+        if (contentArea != null) {
+            contentArea.setStyle(
+                "-fx-background-color: white;" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(255,255,255,0.1), 20, 0, 0, 5);" +
+                "-fx-border-color: #cccccc;" +
+                "-fx-border-width: 1;"
+            );
+            LOGGER.info("PatientCheckInGUI: Kept content area WHITE with BLACK text in dark mode (only page background changed)");
+        }
+        
+        // Apply comprehensive label styling to ALL labels in content area
+        styleAllLabelsInContentArea("black");
+        
+        // Apply dark theme to scene root - this affects all JavaFX controls  
+        stage.getScene().getRoot().setStyle(
+            "-fx-base: #2d2d2d;" +
+            "-fx-control-inner-background: #404040;" + 
+            "-fx-control-inner-background-alt: #363636;" +
+            "-fx-text-background-color: #404040;" +
+            "-fx-text-fill: black;" +
+            "-fx-accent: #4caf50;" +
+            "-fx-selection-bar: #4caf50;" +
+            "-fx-selection-bar-non-focused: #666666;" +
+            "-fx-focused-text-base-color: black;" +
+            "-fx-focused-mark-color: #4caf50;"
+        );
+        
+        // Apply dark theme to specific components
+        applyDarkThemeStyles();
+        
+        LOGGER.info("PatientCheckInGUI: Dark mode applied successfully");
+    }
+
+    @Override  
+    public void applyLightMode() {
+        LOGGER.info("PatientCheckInGUI: applyLightMode() called");
+        
+        if (mainLayout == null || stage == null || stage.getScene() == null) {
+            LOGGER.warning("PatientCheckInGUI: Cannot apply light mode - UI components not initialized");
+            return;
+        }
+        
+        // Apply light theme - ONLY change page background, keep content box white
+        mainLayout.setStyle("-fx-background-color: #f0f9f0;");
+        
+        // Keep content area WHITE in light mode with dark text for visibility
+        if (contentArea != null) {
+            contentArea.setStyle(
+                "-fx-background-color: white;" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
+                "-fx-border-color: #e0e0e0;" +
+                "-fx-border-width: 1;"
+            );
+            LOGGER.info("PatientCheckInGUI: Kept content area WHITE with BLACK text in light mode (only page background changed)");
+        }
+        
+        // Apply comprehensive label styling to ALL labels in content area
+        styleAllLabelsInContentArea("black");
+        
+        // Apply light theme to scene root - this affects all JavaFX controls
+        stage.getScene().getRoot().setStyle(
+            "-fx-base: #f0f9f0;" +
+            "-fx-control-inner-background: #ffffff;" +
+            "-fx-control-inner-background-alt: #f8f9fa;" +
+            "-fx-text-background-color: #ffffff;" +
+            "-fx-text-fill: black;" +
+            "-fx-accent: #4caf50;" +
+            "-fx-selection-bar: #4caf50;" +
+            "-fx-selection-bar-non-focused: #cccccc;" +
+            "-fx-focused-text-base-color: black;" +
+            "-fx-focused-mark-color: #4caf50;"
+        );
+        
+        // Apply light theme to specific components
+        applyLightThemeStyles();
+        
+        LOGGER.info("PatientCheckInGUI: Light mode applied successfully");
     }
 }

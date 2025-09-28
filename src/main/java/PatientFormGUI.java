@@ -22,10 +22,11 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+
 /**
  * GUI class for displaying and managing patient form data
  */
-public class PatientFormGUI {
+public class PatientFormGUI implements Darkmode {
     
     private static final Logger LOGGER = Logger.getLogger(PatientFormGUI.class.getName());
     
@@ -57,7 +58,9 @@ public class PatientFormGUI {
     // Input fields for medical history
     private TextField medicationInput;
     private TextField diagnosisInput;
-    private TextField allergyInput;
+    private TextField allergyInput; 
+
+    private VBox mainLayout;
     
     public PatientFormGUI() {
         this.currentPatient = new NewPatient();
@@ -69,7 +72,7 @@ public class PatientFormGUI {
         stage.setTitle("HealthCare Pro - Patient Information");
         
         // Create main layout with modern styling
-        VBox mainLayout = new VBox(0);
+        this.mainLayout = new VBox(0);
         mainLayout.setStyle(
             "-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);" // Light green gradient
         );
@@ -104,6 +107,15 @@ public class PatientFormGUI {
         Scene scene = new Scene(mainLayout, 900, 750);
         stage.setScene(scene);
         stage.centerOnScreen();
+        
+        // Handle window close event to properly unregister from ThemeManager
+        stage.setOnCloseRequest(e -> {
+            ThemeManager.unregisterGui(this);
+        });
+        
+        // Register with ThemeManager AFTER everything is initialized
+        LOGGER.info("PatientFormGUI: Registering with ThemeManager (UI fully initialized)");
+        ThemeManager.registerGui(this);
         
         // Load existing patient data if any
         loadPatientData();
@@ -998,12 +1010,72 @@ public class PatientFormGUI {
         
         alert.showAndWait();
     }
-    
+
+    @Override
+    public void applyDarkMode() {
+        LOGGER.info("PatientFormGUI: applyDarkMode() called");
+        
+        if (mainLayout == null || stage == null || stage.getScene() == null) {
+            LOGGER.warning("PatientFormGUI: Cannot apply dark mode - UI components not initialized");
+            return;
+        }
+        
+        // Apply dark theme to main layout
+        mainLayout.setStyle("-fx-background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);");
+        
+        // Apply dark theme to scene root - this affects all JavaFX controls
+        stage.getScene().getRoot().setStyle(
+            "-fx-base: #2d2d2d;" +
+            "-fx-control-inner-background: #404040;" + 
+            "-fx-control-inner-background-alt: #363636;" +
+            "-fx-text-background-color: #404040;" +
+            "-fx-text-fill: #e0e0e0;" +
+            "-fx-accent: #4caf50;" +
+            "-fx-selection-bar: #4caf50;" +
+            "-fx-selection-bar-non-focused: #666666;" +
+            "-fx-focused-text-base-color: white;" +
+            "-fx-focused-mark-color: #4caf50;"
+        );
+        
+        LOGGER.info("PatientFormGUI: Dark mode applied successfully");
+    }
+
+    @Override  
+    public void applyLightMode() {
+        LOGGER.info("PatientFormGUI: applyLightMode() called");
+        
+        if (mainLayout == null || stage == null || stage.getScene() == null) {
+            LOGGER.warning("PatientFormGUI: Cannot apply light mode - UI components not initialized");
+            return;
+        }
+        
+        // Apply light theme to main layout  
+        mainLayout.setStyle("-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);");
+        
+        // Apply light theme to scene root - this affects all JavaFX controls
+        stage.getScene().getRoot().setStyle(
+            "-fx-base: #f0f9f0;" +
+            "-fx-control-inner-background: #ffffff;" +
+            "-fx-control-inner-background-alt: #f8f9fa;" +
+            "-fx-text-background-color: #ffffff;" +
+            "-fx-text-fill: #000000;" +
+            "-fx-accent: #4caf50;" +
+            "-fx-selection-bar: #4caf50;" +
+            "-fx-selection-bar-non-focused: #cccccc;" +
+            "-fx-focused-text-base-color: black;" +
+            "-fx-focused-mark-color: #4caf50;"
+        );
+        
+        LOGGER.info("PatientFormGUI: Light mode applied successfully");
+    }
+
     public void show() {
         stage.show();
     }
     
     public void close() {
+        // Unregister from ThemeManager before closing
+        ThemeManager.unregisterGui(this);
         stage.close();
     }
 }
