@@ -1,3 +1,8 @@
+Samuel Hay, Haven Bradshaw and Wyatt Harris participated in this assignment. We chose to add functionality to search for existing patients which will expedite the check-in process for anyone currently on file. Upon comparing our data, we found that putting the button for existing patients after the check-in option on the main screen and next to a new patient button made the code more user friendly and cleaner. We agreed that a cleaner search results table that includes categories for Name, DOB and Patient ID makes for a smoother search. Matching the color scheme of the buttons also produces a more aesthetically pleasing experience. 
+
+We ultimately agreed that Haven's branch would be the one we would make a pull request for to push to main. Haven's branch was the cleanest and it met all of the criteria we agreed upon. 
+
+
 # 🏥 Patient Management System - JavaFX Application
 
 A modern, professional JavaFX-based patient management system designed for healthcare facilities. Features a clean, green-themed user interface with comprehensive patient check-in workflows, data management, and appointment scheduling capabilities.
