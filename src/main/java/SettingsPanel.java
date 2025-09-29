@@ -78,12 +78,15 @@ public class SettingsPanel {
 
 		// Buttons
 		Button applyBtn = new Button("Apply");
+		applyBtn.setStyle("-fx-background-color: #4CAF50 -fx-text-fill: white;");
 		Button saveCloseBtn = new Button("Save & Close");
+		saveCloseBtn.setStyle("-fx-background-color: #6f42c1 -fx-text-fill: white;");
 		Button cancelBtn = new Button("Cancel");
+		cancelBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+
 
 		HBox buttons = new HBox(10, applyBtn, saveCloseBtn, cancelBtn);
 		buttons.setAlignment(Pos.CENTER_RIGHT);
-
 		root.getChildren().addAll(famRow, colorRow, sizeRow, previewLabel, buttons);
 
 		// Listeners
