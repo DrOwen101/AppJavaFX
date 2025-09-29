@@ -73,8 +73,20 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
+
+        // Create Settings button (small, neutral color)
+        Button settingsBtn = createModernButton(
+            "⚙️ Settings",
+            "#17a2b8", "#117a8b",
+            200, 55
+        );
+        settingsBtn.setOnAction(e -> {
+            LOGGER.info("Opening Settings panel...");
+            SettingsPanel settingsPanel = new SettingsPanel();
+            settingsPanel.show();
+        });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+    buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, settingsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         

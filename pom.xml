@@ -11,6 +11,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>17.0.10</javafx.version>
+    <!-- let os-maven-plugin detect the native classifier (e.g. windows-x86_64) -->
+    <javafx.platform>${os.detected.classifier}</javafx.platform>
     <!-- Use one way to set Java version; compiler plugin below uses <release> -->
   </properties>
 
@@ -31,6 +33,20 @@
 
   <build>
     <plugins>
+      <!-- Detect OS so we can pull the correct JavaFX native classifier from Maven Central -->
+      <plugin>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.7.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>detect</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
