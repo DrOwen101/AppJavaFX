@@ -11,6 +11,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+//run with mvn javafx:run  !
+
 public class Main extends Application {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
@@ -73,8 +75,20 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
+
+        //TESTING
+        Button searchPatient = createModernButton(
+            "Search for Patient",
+            "#6f42c1", "#563d7c", // Find new color
+            200, 55
+        );
+        searchPatient.setOnAction(e -> {
+            LOGGER.info("Opening Search patient...");
+            SearchPatientGUI searchPatientGUI = new SearchPatientGUI();
+            searchPatientGUI.show();
+        });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, searchPatient);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
