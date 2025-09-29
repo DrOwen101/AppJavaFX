@@ -212,3 +212,55 @@ This application is developed for educational and healthcare management purposes
 ## 🤝 Contributing
 
 We welcome contributions to improve the Patient Management System. Please follow the existing code style and patterns when submitting pull requests. Ensure all new features include appropriate user stories and maintain the professional green theme design language.
+
+---
+
+## 🛠️ Troubleshooting: JavaFX runtime / Maven path issues (Windows)
+
+If you see errors like "JavaFX runtime components are missing" or "Maven executable path not shown" when trying to run `Main.java` from an editor (for example VS Code), follow these steps:
+
+1. Verify JDK 17 is installed and JAVA_HOME is set
+
+   - Check Java version in PowerShell:
+     ```powershell
+     java -version
+     ```
+   - If it does not report a Java 17+ JDK, download and install from AdoptOpenJDK/Temurin or Oracle, then set `JAVA_HOME` in Windows Environment Variables to the JDK install path and add `%JAVA_HOME%\bin` to your `PATH`.
+
+2. Ensure Maven is installed or use the Maven wrapper
+
+   - Check Maven in PowerShell:
+     ```powershell
+     mvn -v
+     ```
+   - If Maven is missing, install Apache Maven (or use the `mvnw` wrapper if the repo provides it). After installing, ensure `mvn` is on your PATH.
+
+3. Run the app with the JavaFX platform classifier (Windows example)
+
+   - We added a `javafx.platform` property to `pom.xml` which defaults to `win` for Windows. Run:
+     ```powershell
+     mvn -Djavafx.platform=win clean compile javafx:run
+     ```
+   - If you are on macOS or Linux, use `-Djavafx.platform=mac` or `-Djavafx.platform=linux` respectively.
+
+4. VS Code: configure Java and Maven paths
+
+   - Open Settings (Ctrl+,) and search for `java.home` or `maven.executable.path`.
+   - Set `java.home` to your JDK folder (for example `C:\Program Files\Eclipse Adoptium\jdk-17.0.x`) if the Java extension complains.
+   - Set `maven.executable.path` to the `mvn.cmd` path (for example `C:\Program Files\apache-maven-3.8.8\bin\mvn.cmd`) if needed.
+   - Restart VS Code after changing these settings.
+
+5. Common cause: running compiled jar without native JavaFX libs
+
+   - If you try to run a packaged jar with `java -jar target/app.jar` and see missing JavaFX runtime errors, you need to either:
+     - Use the javafx-maven-plugin to run the app (as above), which adds native libraries at run-time, or
+     - Build a native bundle with the JavaFX tools (jpackage) that includes the JavaFX modules for your platform.
+
+6. Still failing? Collect and share these outputs
+
+   - Paste the output of these commands when asking for help:
+     ```powershell
+     java -version ; mvn -v ; mvn -Djavafx.platform=win clean compile javafx:run
+     ```
+
+That should resolve the two common problems: Maven not available to your editor, and the JavaFX native libraries missing at runtime. If you want, I can try running `mvn -Djavafx.platform=win clean compile javafx:run` here to validate — tell me if you want me to run it.

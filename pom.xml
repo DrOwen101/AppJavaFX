@@ -11,6 +11,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>17.0.10</javafx.version>
+    <!-- Set platform classifier for JavaFX native libraries. Change to 'linux' or 'mac' on other OSes. -->
+    <javafx.platform>win</javafx.platform>
     <!-- Use one way to set Java version; compiler plugin below uses <release> -->
   </properties>
 
@@ -21,11 +23,13 @@
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>${javafx.version}</version>
+      <classifier>${javafx.platform}</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
       <version>${javafx.version}</version>
+      <classifier>${javafx.platform}</classifier>
     </dependency>
   </dependencies>
 
@@ -45,12 +49,23 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
+          <!-- Use full main class name. If your Main class is in a package, change this to the full package path. -->
           <mainClass>Main</mainClass>
-          <options>
-            <option>--add-opens</option>
-            <option>java.desktop/sun.awt=ALL-UNNAMED</option>
-          </options>
+          <launcher>javafx:run</launcher>
+          <systemProperties>
+            <systemProperty>
+              <key>javafx.platform</key>
+              <value>${javafx.platform}</value>
+            </systemProperty>
+          </systemProperties>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -73,8 +73,19 @@ public class Main extends Application {
             LOGGER.info("Opening saved patients view...");
             showSavedPatientsDialog(primaryStage);
         });
+
+        // Create Settings button with grey
+        Button settingsBtn = createModernButton(
+            "⚙ Settings",
+            "#747474ff", "#4d4d4dff", // grey because settings is grey (this is known)
+            200, 55
+        );
+        settingsBtn.setOnAction(e -> {
+            LOGGER.info("Opening settings...");
+            startSettingsWorkflow(primaryStage);
+        });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn, settingsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
@@ -182,6 +193,13 @@ public class Main extends Application {
         } else {
             LOGGER.info("Check-in workflow cancelled by user");
         }
+    }
+
+    private void startSettingsWorkflow(Stage parentStage) {
+        // Show the settings popup first
+        SettingsPopup popup = new SettingsPopup(parentStage);
+        // Show the settings popup and wait for user interaction
+        popup.showAndWait();
     }
     
     /**
