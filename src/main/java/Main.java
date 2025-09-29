@@ -13,16 +13,24 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+    private ThemeManager themeManager;
+    
+    // UI References for theme updates
+    private VBox mainLayout;
+    private VBox buttonContainer;
+    private VBox headerSection;
 
     @Override
     public void start(Stage primaryStage) {
+        // Initialize theme manager
+        themeManager = ThemeManager.getInstance();
         // Create main layout with modern styling
         VBox mainLayout = new VBox(20);
         mainLayout.setAlignment(Pos.CENTER);
         mainLayout.setPadding(new Insets(40));
-        mainLayout.setStyle(
-            "-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);" // Light green gradient background
-        );
+        
+        // Apply theme-aware background
+        updateMainLayoutStyles(mainLayout);
         
         // Create header section
         VBox headerSection = createHeaderSection();
@@ -31,14 +39,12 @@ public class Main extends Application {
         VBox buttonContainer = new VBox(15);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.setPadding(new Insets(30));
-        buttonContainer.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 5);" +
-            "-fx-border-color: #d4edda;" +
-            "-fx-border-width: 1;"
-        );
+        
+        // Apply theme-aware card styles
+        updateButtonContainerStyles(buttonContainer);
+        
+        // Create Dark Mode Toggle button
+        Button darkModeToggleBtn = createDarkModeToggleButton();
         
         // Create Patient Form button with modern green styling
         Button patientFormBtn = createModernButton(
@@ -74,19 +80,26 @@ public class Main extends Application {
             showSavedPatientsDialog(primaryStage);
         });
         
-        buttonContainer.getChildren().addAll(patientFormBtn, checkInBtn, viewPatientsBtn);
+        buttonContainer.getChildren().addAll(darkModeToggleBtn, patientFormBtn, checkInBtn, viewPatientsBtn);
         
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
-        Scene scene = new Scene(mainLayout, 450, 550);
+        Scene scene = new Scene(mainLayout, 450, 600); // Increased height for toggle button
         primaryStage.setTitle("HealthCare Pro - Patient Management System");
         primaryStage.setScene(scene);
+        
+        // Register scene with theme manager
+        themeManager.registerScene(scene);
+        
+        // Store references for theme updates
+        storeUIReferences(mainLayout, buttonContainer, headerSection);
+        
         primaryStage.centerOnScreen();
         primaryStage.show();
     }
     
     /**
-     * Create modern header section
+     * Create modern header section with theme support
      */
     private VBox createHeaderSection() {
         VBox header = new VBox(10);
@@ -96,68 +109,137 @@ public class Main extends Application {
         // Main title
         Label titleLabel = new Label("HealthCare Pro");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
-        titleLabel.setStyle("-fx-text-fill: #1b5e20;"); // Dark green
+        titleLabel.setStyle(themeManager.getHeaderTextStyles());
         
         // Subtitle
         Label subtitleLabel = new Label("Patient Management System");
         subtitleLabel.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 16));
-        subtitleLabel.setStyle("-fx-text-fill: #388e3c;"); // Medium green
+        subtitleLabel.setStyle(themeManager.getSubtitleTextStyles());
         
         // Version/status indicator
         Label versionLabel = new Label("v2.0 • Professional Edition");
         versionLabel.setFont(Font.font("Segoe UI", FontWeight.LIGHT, 12));
-        versionLabel.setStyle("-fx-text-fill: #81c784;"); // Light green
+        versionLabel.setStyle(themeManager.getVersionTextStyles());
         
         header.getChildren().addAll(titleLabel, subtitleLabel, versionLabel);
         return header;
     }
     
     /**
-     * Create a modern styled button
+     * Create a modern styled button with theme support
      */
     private Button createModernButton(String text, String primaryColor, String hoverColor, double width, double height) {
         Button button = new Button(text);
         button.setPrefSize(width, height);
         button.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 14));
         
+        // Apply theme-aware styling
+        updateButtonStyles(button, primaryColor, hoverColor);
+        
+        return button;
+    }
+    
+    /**
+     * Update button styles based on current theme
+     */
+    private void updateButtonStyles(Button button, String primaryColor, String hoverColor) {
         // Base styling
-        button.setStyle(
-            "-fx-background-color: " + primaryColor + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-background-radius: 12;" +
-            "-fx-border-radius: 12;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
-            "-fx-cursor: hand;"
-        );
+        button.setStyle(themeManager.getButtonStyles(primaryColor, hoverColor));
         
         // Hover effects
         button.setOnMouseEntered(e -> 
-            button.setStyle(
-                "-fx-background-color: " + hoverColor + ";" +
-                "-fx-text-fill: white;" +
-                "-fx-background-radius: 12;" +
-                "-fx-border-radius: 12;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 4);" +
-                "-fx-cursor: hand;" +
-                "-fx-scale-x: 1.02;" +
-                "-fx-scale-y: 1.02;"
-            )
+            button.setStyle(themeManager.getButtonHoverStyles(hoverColor))
         );
         
         button.setOnMouseExited(e -> 
-            button.setStyle(
-                "-fx-background-color: " + primaryColor + ";" +
-                "-fx-text-fill: white;" +
-                "-fx-background-radius: 12;" +
-                "-fx-border-radius: 12;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);" +
-                "-fx-cursor: hand;" +
-                "-fx-scale-x: 1.0;" +
-                "-fx-scale-y: 1.0;"
-            )
+            button.setStyle(themeManager.getButtonStyles(primaryColor, hoverColor))
         );
+    }
+    
+    /**
+     * Create dark mode toggle button
+     */
+    private Button createDarkModeToggleButton() {
+        Button toggleBtn = new Button(themeManager.isDarkMode() ? "🔆 Light Mode" : "🌙 Dark Mode");
+        toggleBtn.setPrefSize(200, 45);
+        toggleBtn.setFont(Font.font("Segoe UI", FontWeight.MEDIUM, 13));
         
-        return button;
+        // Apply theme-aware styling
+        String primaryColor = "#6c757d";
+        String hoverColor = "#5a6268";
+        updateButtonStyles(toggleBtn, primaryColor, hoverColor);
+        
+        // Toggle action
+        toggleBtn.setOnAction(e -> {
+            themeManager.toggleTheme();
+            toggleBtn.setText(themeManager.isDarkMode() ? "🔆 Light Mode" : "🌙 Dark Mode");
+            updateAllUIElements();
+        });
+        
+        return toggleBtn;
+    }
+    
+    /**
+     * Update main layout styles based on current theme
+     */
+    private void updateMainLayoutStyles(VBox layout) {
+        if (themeManager.isDarkMode()) {
+            layout.setStyle(themeManager.getDarkModeStyles());
+        } else {
+            layout.setStyle(themeManager.getLightModeStyles());
+        }
+    }
+    
+    /**
+     * Update button container styles based on current theme
+     */
+    private void updateButtonContainerStyles(VBox container) {
+        container.setStyle(themeManager.getCardStyles());
+    }
+    
+    /**
+     * Store UI references for theme updates
+     */
+    private void storeUIReferences(VBox mainLayout, VBox buttonContainer, VBox headerSection) {
+        this.mainLayout = mainLayout;
+        this.buttonContainer = buttonContainer;
+        this.headerSection = headerSection;
+    }
+    
+    /**
+     * Update all UI elements when theme changes
+     */
+    private void updateAllUIElements() {
+        if (mainLayout != null) {
+            updateMainLayoutStyles(mainLayout);
+        }
+        if (buttonContainer != null) {
+            updateButtonContainerStyles(buttonContainer);
+        }
+        if (headerSection != null) {
+            updateHeaderStyles();
+        }
+    }
+    
+    /**
+     * Update header styles based on current theme
+     */
+    private void updateHeaderStyles() {
+        if (headerSection != null) {
+            headerSection.getChildren().forEach(node -> {
+                if (node instanceof Label) {
+                    Label label = (Label) node;
+                    String text = label.getText();
+                    if (text.contains("HealthCare Pro")) {
+                        label.setStyle(themeManager.getHeaderTextStyles());
+                    } else if (text.contains("Patient Management System")) {
+                        label.setStyle(themeManager.getSubtitleTextStyles());
+                    } else if (text.contains("v2.0")) {
+                        label.setStyle(themeManager.getVersionTextStyles());
+                    }
+                }
+            });
+        }
     }
     
     /**

@@ -56,6 +56,14 @@ public class AppointmentManagerGUI {
         VBox mainLayout = new VBox(15);
         mainLayout.setPadding(new Insets(20));
         
+        // Apply theme-aware styling
+        ThemeManager themeManager = ThemeManager.getInstance();
+        if (themeManager.isDarkMode()) {
+            mainLayout.setStyle(themeManager.getDarkModeStyles());
+        } else {
+            mainLayout.setStyle(themeManager.getLightModeStyles());
+        }
+        
         // Create tabs for different appointment management sections
         TabPane tabPane = new TabPane();
         
@@ -81,6 +89,9 @@ public class AppointmentManagerGUI {
         
         Scene scene = new Scene(mainLayout, 800, 600);
         stage.setScene(scene);
+        
+        // Register with theme manager
+        themeManager.registerScene(scene);
         
         // Load existing appointment data
         refreshAppointmentData();
