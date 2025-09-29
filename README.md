@@ -5,3 +5,6 @@ There was no AI used in this assignment.
 
 Features List:
 Adds a button to the main menu, "View Settings." Changes the buttons of the main menu to be more uniform. View Settings button creates new window Settings. Settings window features 3 checkboxes for different settings - "Toggle Dyslexia Display," "Toggle Colorblind Mode," and "Toggle Date/Time Display." When checked, Toggle Dyslexia Display will change the font of Settings and the Main Menu to the more dyslexia-friendly Verdana, and increase the size of all the text. Toggle Colorblind Mode changes the background colors of the program, increasing contrast and making it more accessible for Colorblind individuals. Toggle Date/Time Display will display the current date and time at the bottom of the screen. 
+
+Selection:
+Selection process was done by Anna Graham, Ryley Froning, and Owen Hansen. We learned a lot about breaking designs up into their individual components and figuring out how we approached the same problems in different ways. We all used completely different methods and javafx features to approach a settings panel, and deciding which strategies were better for specific scenarios was an important part of the selection process. 
