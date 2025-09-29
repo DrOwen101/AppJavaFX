@@ -190,6 +190,10 @@ public class CheckInPopup {
         scene.setFill(null); // Transparent background for rounded corners
         popupStage.setScene(scene);
         
+        // Register with theme manager
+        ThemeManager themeManager = ThemeManager.getInstance();
+        themeManager.registerScene(scene);
+        
         // Center the popup on screen
         popupStage.centerOnScreen();
     }

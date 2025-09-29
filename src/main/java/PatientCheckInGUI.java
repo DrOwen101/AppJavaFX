@@ -33,6 +33,7 @@ public class PatientCheckInGUI {
     
     private Stage stage;
     private CheckInWorkflow checkInWorkflow;
+    private ThemeManager themeManager;
     
     // Step tracking
     private int currentStep;
@@ -92,6 +93,7 @@ public class PatientCheckInGUI {
     public PatientCheckInGUI() {
         this.checkInWorkflow = new CheckInWorkflow();
         this.currentStep = 1;
+        this.themeManager = ThemeManager.getInstance();
         initializeGUI();
     }
     
@@ -111,9 +113,13 @@ public class PatientCheckInGUI {
         // Create main layout with modern gradient background
         mainLayout = new VBox(20);
         mainLayout.setPadding(new Insets(25));
-        mainLayout.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #e8f5e8, #f1f8e9);"
-        );
+        
+        // Apply theme-aware styling to main layout
+        if (themeManager.isDarkMode()) {
+            mainLayout.setStyle(themeManager.getDarkModeStyles() + "-fx-padding: 20;");
+        } else {
+            mainLayout.setStyle(themeManager.getLightModeStyles() + "-fx-padding: 20;");
+        }
         
         // Create header section
         createHeaderSection();
@@ -155,18 +161,32 @@ public class PatientCheckInGUI {
         // Create scene and show
         Scene scene = new Scene(scrollPane, 900, 800);
         stage.setScene(scene);
+        
+        // Register with theme manager
+        themeManager.registerScene(scene);
+        
         stage.show();
     }
     
     private VBox createHeaderSection() {
         VBox header = new VBox(15);
         header.setPadding(new Insets(20));
-        header.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #2e7d32, #388e3c);" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 3);"
-        );
+        // Apply theme-aware header styling (use existing themeManager from above)
+        if (themeManager.isDarkMode()) {
+            header.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #424242, #616161);" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 3);"
+            );
+        } else {
+            header.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #2e7d32, #388e3c);" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 3);"
+            );
+        }
         
         // Create top row with title and save button
         HBox topRow = new HBox();
