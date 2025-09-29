@@ -27,7 +27,13 @@ public class PatientDataObject {
     // Contact information
     private String phoneNumber;
     private String email;
-    private String address;
+    // added address components (keim)
+    private String street;
+    private String city;
+    private String state;
+    private String zipCode;
+    // end of added address components (keim)
+    private String address; 
     private String emergencyContact;
     private String emergencyPhone;
     
@@ -131,6 +137,12 @@ public class PatientDataObject {
         this.age = patient.getAge();
         this.phoneNumber = patient.getPhoneNumber();
         this.email = patient.getEmail();
+        // start of added address components (keim)
+        this.street = patient.getStreet();
+        this.city = patient.getCity();
+        this.state = patient.getState();
+        this.zipCode = patient.getZipCode();
+        // end of added address components (keim)
         this.address = patient.getAddress();
         this.emergencyContact = patient.getEmergencyContact();
         this.emergencyPhone = patient.getEmergencyPhone();
@@ -197,9 +209,29 @@ public class PatientDataObject {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     
+    // start of added getter and setters for address components (keim)
+    public String getStreet() { return street; }
+    public void setStreet(String street) { this.street = street; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public String getZipCode() { return zipCode; }
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+
     public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-    
+    public void setAddress(String street, String city, String state, String zipCode) { 
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.address = street + ", " + city + ", " + state + " " + zipCode; 
+    }
+    // end of added getters and setters for address components (keim)
+
     public String getEmergencyContact() { return emergencyContact; }
     public void setEmergencyContact(String emergencyContact) { this.emergencyContact = emergencyContact; }
     
@@ -325,6 +357,12 @@ public class PatientDataObject {
         json.append("  \"contactInfo\": {\n");
         json.append("    \"phoneNumber\": \"").append(phoneNumber != null ? phoneNumber : "").append("\",\n");
         json.append("    \"email\": \"").append(email != null ? email : "").append("\",\n");
+        // start of added address components (keim)
+        json.append("    \"street\": \"").append(street != null ? street : "").append("\",\n");
+        json.append("    \"city\": \"").append(city != null ? city : "").append("\",\n");
+        json.append("    \"state\": \"").append(state != null ? state : "").append("\",\n");
+        json.append("    \"zipCode\": \"").append(zipCode != null ? zipCode : "").append("\",\n");
+        // end of added address components (keim)
         json.append("    \"address\": \"").append(address != null ? address : "").append("\",\n");
         json.append("    \"emergencyContact\": \"").append(emergencyContact != null ? emergencyContact : "").append("\",\n");
         json.append("    \"emergencyPhone\": \"").append(emergencyPhone != null ? emergencyPhone : "").append("\"\n");

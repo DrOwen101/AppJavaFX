@@ -37,7 +37,14 @@ public class PatientFormGUI {
     private TextField lastNameField;
     private DatePicker dateOfBirthPicker;
     private ComboBox<String> genderComboBox;
-    private TextField addressField;
+
+    // start of added address components (keim)
+    private TextField streetField;
+    private TextField cityField;
+    private TextField stateField;
+    private TextField zipCodeField;
+    // end of added address components (keim)
+
     private TextField phoneField;
     private TextField emailField;
     private TextField emergencyContactField;
@@ -245,55 +252,78 @@ public class PatientFormGUI {
         styleComponent(genderComboBox);
         grid.add(genderComboBox, 3, 1);
         
+        // start of added address components and grid edits (keim)
         // Row 2
-        Label addressLabel = new Label("Address:");
-        addressLabel.setStyle(labelStyle);
-        grid.add(addressLabel, 0, 2);
-        addressField = createStyledTextField("Enter complete address");
-        grid.add(addressField, 1, 2, 3, 1); // span 3 columns
-        
+        Label streetLabel = new Label("Street:");
+        streetLabel.setStyle(labelStyle);
+        grid.add(streetLabel, 0, 2);
+        streetField = createStyledTextField("Enter street address");
+        grid.add(streetField, 1, 2, 3, 1); // span 3 columns
+
         // Row 3
+        Label cityLabel = new Label("City:");
+        cityLabel.setStyle(labelStyle);
+        grid.add(cityLabel, 0, 3);
+        cityField = createStyledTextField("Enter city");
+        grid.add(cityField, 1, 3, 3, 1); // span 3 columns
+
+        // Row 4
+        Label stateLabel = new Label("State:");
+        stateLabel.setStyle(labelStyle);
+        grid.add(stateLabel, 0, 4);
+        stateField = createStyledTextField("Enter state");
+        grid.add(stateField, 1, 4, 1, 1); // span 2 columns
+
+        Label zipCodeLabel = new Label("Zip Code:");
+        zipCodeLabel.setStyle(labelStyle);
+        grid.add(zipCodeLabel, 2, 4);
+        zipCodeField = createStyledTextField("Enter 5-digit zip code");
+        grid.add(zipCodeField, 3, 4, 1, 1); // span 1 column
+        // end of added address components (keim)
+        
+        // Row 5
         Label phoneLabel = new Label("Phone:");
         phoneLabel.setStyle(labelStyle);
-        grid.add(phoneLabel, 0, 3);
+        grid.add(phoneLabel, 0, 5);
         phoneField = createStyledTextField("Enter phone number");
-        grid.add(phoneField, 1, 3);
+        grid.add(phoneField, 1, 5);
         
         Label emailLabel = new Label("Email:");
         emailLabel.setStyle(labelStyle);
-        grid.add(emailLabel, 2, 3);
+        grid.add(emailLabel, 2, 5);
         emailField = createStyledTextField("Enter email address");
-        grid.add(emailField, 3, 3);
+        grid.add(emailField, 3, 5);
         
-        // Row 4
+        // Row 6
         Label emergencyContactLabel = new Label("Emergency Contact:");
         emergencyContactLabel.setStyle(labelStyle);
-        grid.add(emergencyContactLabel, 0, 4);
+        grid.add(emergencyContactLabel, 0, 6);
         emergencyContactField = createStyledTextField("Enter emergency contact name");
-        grid.add(emergencyContactField, 1, 4);
+        grid.add(emergencyContactField, 1, 6);
         
         Label emergencyPhoneLabel = new Label("Emergency Phone:");
         emergencyPhoneLabel.setStyle(labelStyle);
-        grid.add(emergencyPhoneLabel, 2, 4);
+        grid.add(emergencyPhoneLabel, 2, 6);
         emergencyPhoneField = createStyledTextField("Enter emergency phone");
-        grid.add(emergencyPhoneField, 3, 4);
+        grid.add(emergencyPhoneField, 3, 6);
         
-        // Row 5
+        // Row 7
         Label insuranceProviderLabel = new Label("Insurance Provider:");
         insuranceProviderLabel.setStyle(labelStyle);
-        grid.add(insuranceProviderLabel, 0, 5);
+        grid.add(insuranceProviderLabel, 0, 7);
         insuranceProviderField = createStyledTextField("Enter insurance provider");
-        grid.add(insuranceProviderField, 1, 5);
+        grid.add(insuranceProviderField, 1, 7);
         
         Label policyLabel = new Label("Policy Number:");
         policyLabel.setStyle(labelStyle);
-        grid.add(policyLabel, 2, 5);
+        grid.add(policyLabel, 2, 7);
         insurancePolicyField = createStyledTextField("Enter policy number");
-        grid.add(insurancePolicyField, 3, 5);
+        grid.add(insurancePolicyField, 3, 7);
         
         section.getChildren().addAll(sectionHeader, grid);
         return section;
     }
+    // end of grid edits (keim)
     
     /**
      * Create styled text field
@@ -781,7 +811,11 @@ public class PatientFormGUI {
             currentPatient.setLastName(lastNameField.getText());
             currentPatient.setDateOfBirth(dateOfBirthPicker.getValue());
             currentPatient.setGender(genderComboBox.getValue());
-            currentPatient.setAddress(addressField.getText());
+
+            // start of added address components (keim)
+            currentPatient.setAddress( streetField.getText(), cityField.getText(), stateField.getText(), zipCodeField.getText());
+            // end of added address components (keim)
+
             currentPatient.setPhoneNumber(phoneField.getText());
             currentPatient.setEmail(emailField.getText());
             currentPatient.setEmergencyContact(emergencyContactField.getText());
@@ -811,7 +845,14 @@ public class PatientFormGUI {
         lastNameField.clear();
         dateOfBirthPicker.setValue(null);
         genderComboBox.setValue(null);
-        addressField.clear();
+
+        // start of added address components (keim)
+        streetField.clear();
+        cityField.clear();
+        stateField.clear();
+        zipCodeField.clear();
+        // end of added address components (keim)
+
         phoneField.clear();
         emailField.clear();
         emergencyContactField.clear();
@@ -868,7 +909,11 @@ public class PatientFormGUI {
         currentPatient.setLastName(lastNameField.getText());
         currentPatient.setDateOfBirth(dateOfBirthPicker.getValue());
         currentPatient.setGender(genderComboBox.getValue());
-        currentPatient.setAddress(addressField.getText());
+
+        // start of added address components (keim)
+        currentPatient.setAddress( streetField.getText(), cityField.getText(), stateField.getText(), zipCodeField.getText());
+        // end of added address components (keim)
+
         currentPatient.setPhoneNumber(phoneField.getText());
         currentPatient.setEmail(emailField.getText());
         currentPatient.setEmergencyContact(emergencyContactField.getText());
@@ -946,7 +991,9 @@ public class PatientFormGUI {
         patientData.setAge(currentPatient.getAge());
         patientData.setPhoneNumber(currentPatient.getPhoneNumber());
         patientData.setEmail(currentPatient.getEmail());
-        patientData.setAddress(currentPatient.getAddress());
+        // start of added address components (keim)
+        patientData.setAddress( streetField.getText(), cityField.getText(), stateField.getText(), zipCodeField.getText());
+        // end of added address components (keim)
         patientData.setEmergencyContact(currentPatient.getEmergencyContact());
         patientData.setEmergencyPhone(currentPatient.getEmergencyPhone());
         patientData.setInsuranceProvider(currentPatient.getInsuranceProvider());
