@@ -1,3 +1,53 @@
+/**
+ * PatientFormGUI.java - Enhanced Patient Registration Form
+ * 
+ * DESIGN DECISIONS & IMPROVEMENTS:
+ * 
+ * 1. ADDRESS FIELD REDESIGN:
+ *    - Replaced single 'address' TextField with separate components:
+ *      • streetAddressField: Full street address including apt/suite
+ *      • cityField: City name
+ *      • stateField: State abbreviation (smaller width for better UX)
+ *      • zipCodeField: Postal code (appropriate width)
+ *    
+ *    RATIONALE: Separate address fields improve data quality, validation,
+ *    and user experience by following standard web form conventions.
+ *    Users can tab through fields naturally and understand exactly
+ *    what information goes where.
+ *
+ * 2. UI LAYOUT ENHANCEMENTS:
+ *    - Added visual section headers ("Address Information", "Contact Information")
+ *    - Improved spacing and organization with logical groupings
+ *    - Enhanced placeholder text with realistic examples
+ *    - Maintained responsive grid layout while improving readability
+ *
+ *    RATIONALE: Visual grouping reduces cognitive load and helps users
+ *    understand the form structure. Clear examples in placeholders
+ *    guide proper data entry format.
+ *
+ * 3. DATA HANDLING IMPROVEMENTS:
+ *    - buildFullAddress(): Combines separate fields into legacy format
+ *    - parseAndSetAddress(): Parses existing addresses back to components
+ *    - Maintains backward compatibility with existing data storage
+ *    
+ *    RATIONALE: Ensures existing patient data continues to work while
+ *    new entries benefit from improved structure. Graceful migration
+ *    path for legacy data.
+ *
+ * 4. FIELD SIZING AND POSITIONING:
+ *    - Street address spans multiple columns for longer entries
+ *    - State field optimized for 2-letter abbreviations
+ *    - Zip code field sized appropriately for postal codes
+ *    - Email and phone fields positioned logically together
+ *
+ *    RATIONALE: Field sizing matches expected content length, improving
+ *    visual hierarchy and user experience.
+ *
+ * @author Team 8 - Enhanced UI Design
+ * @version 2.0 - Address Field Redesign
+ * @date September 28, 2025
+ */
+
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -37,7 +87,10 @@ public class PatientFormGUI {
     private TextField lastNameField;
     private DatePicker dateOfBirthPicker;
     private ComboBox<String> genderComboBox;
-    private TextField addressField;
+    private TextField streetAddressField;
+    private TextField cityField;
+    private TextField stateField;
+    private TextField zipCodeField;
     private TextField phoneField;
     private TextField emailField;
     private TextField emergencyContactField;
@@ -245,51 +298,83 @@ public class PatientFormGUI {
         styleComponent(genderComboBox);
         grid.add(genderComboBox, 3, 1);
         
-        // Row 2
-        Label addressLabel = new Label("Address:");
-        addressLabel.setStyle(labelStyle);
-        grid.add(addressLabel, 0, 2);
-        addressField = createStyledTextField("Enter complete address");
-        grid.add(addressField, 1, 2, 3, 1); // span 3 columns
+        // Row 2 - Address Section
+        Label addressSectionLabel = new Label("Address Information:");
+        addressSectionLabel.setStyle(labelStyle + "-fx-font-weight: bold; -fx-font-size: 14px;");
+        grid.add(addressSectionLabel, 0, 2, 4, 1);
         
-        // Row 3
+        // Row 3 - Street Address
+        Label streetLabel = new Label("Street Address:");
+        streetLabel.setStyle(labelStyle);
+        grid.add(streetLabel, 0, 3);
+        streetAddressField = createStyledTextField("123 Main Street, Apt 4B");
+        grid.add(streetAddressField, 1, 3, 3, 1); // span 3 columns for longer street address
+        
+        // Row 4 - City, State, Zip in one row
+        Label cityLabel = new Label("City:");
+        cityLabel.setStyle(labelStyle);
+        grid.add(cityLabel, 0, 4);
+        cityField = createStyledTextField("Los Angeles");
+        grid.add(cityField, 1, 4);
+        
+        Label stateLabel = new Label("State:");
+        stateLabel.setStyle(labelStyle);
+        grid.add(stateLabel, 2, 4);
+        stateField = createStyledTextField("CA");
+        stateField.setPrefWidth(80);
+        grid.add(stateField, 3, 4);
+        
+        // Row 5 - Zip Code
+        Label zipLabel = new Label("Zip Code:");
+        zipLabel.setStyle(labelStyle);
+        grid.add(zipLabel, 0, 5);
+        zipCodeField = createStyledTextField("90210");
+        zipCodeField.setPrefWidth(120);
+        grid.add(zipCodeField, 1, 5);
+        
+        // Row 6 - Contact Information Section
+        Label contactSectionLabel = new Label("Contact Information:");
+        contactSectionLabel.setStyle(labelStyle + "-fx-font-weight: bold; -fx-font-size: 14px;");
+        grid.add(contactSectionLabel, 0, 6, 4, 1);
+        
+        // Row 7 - Phone and Email
         Label phoneLabel = new Label("Phone:");
         phoneLabel.setStyle(labelStyle);
-        grid.add(phoneLabel, 0, 3);
-        phoneField = createStyledTextField("Enter phone number");
-        grid.add(phoneField, 1, 3);
+        grid.add(phoneLabel, 0, 7);
+        phoneField = createStyledTextField("(555) 123-4567");
+        grid.add(phoneField, 1, 7);
         
         Label emailLabel = new Label("Email:");
         emailLabel.setStyle(labelStyle);
-        grid.add(emailLabel, 2, 3);
-        emailField = createStyledTextField("Enter email address");
-        grid.add(emailField, 3, 3);
+        grid.add(emailLabel, 2, 7);
+        emailField = createStyledTextField("patient@email.com");
+        grid.add(emailField, 3, 7);
         
-        // Row 4
+        // Row 8 - Emergency Contact Information
         Label emergencyContactLabel = new Label("Emergency Contact:");
         emergencyContactLabel.setStyle(labelStyle);
-        grid.add(emergencyContactLabel, 0, 4);
-        emergencyContactField = createStyledTextField("Enter emergency contact name");
-        grid.add(emergencyContactField, 1, 4);
+        grid.add(emergencyContactLabel, 0, 8);
+        emergencyContactField = createStyledTextField("Full name");
+        grid.add(emergencyContactField, 1, 8);
         
         Label emergencyPhoneLabel = new Label("Emergency Phone:");
         emergencyPhoneLabel.setStyle(labelStyle);
-        grid.add(emergencyPhoneLabel, 2, 4);
-        emergencyPhoneField = createStyledTextField("Enter emergency phone");
-        grid.add(emergencyPhoneField, 3, 4);
+        grid.add(emergencyPhoneLabel, 2, 8);
+        emergencyPhoneField = createStyledTextField("(555) 987-6543");
+        grid.add(emergencyPhoneField, 3, 8);
         
-        // Row 5
+        // Row 9 - Insurance Information
         Label insuranceProviderLabel = new Label("Insurance Provider:");
         insuranceProviderLabel.setStyle(labelStyle);
-        grid.add(insuranceProviderLabel, 0, 5);
-        insuranceProviderField = createStyledTextField("Enter insurance provider");
-        grid.add(insuranceProviderField, 1, 5);
+        grid.add(insuranceProviderLabel, 0, 9);
+        insuranceProviderField = createStyledTextField("Blue Cross Blue Shield");
+        grid.add(insuranceProviderField, 1, 9);
         
         Label policyLabel = new Label("Policy Number:");
         policyLabel.setStyle(labelStyle);
-        grid.add(policyLabel, 2, 5);
-        insurancePolicyField = createStyledTextField("Enter policy number");
-        grid.add(insurancePolicyField, 3, 5);
+        grid.add(policyLabel, 2, 9);
+        insurancePolicyField = createStyledTextField("ABC123456789");
+        grid.add(insurancePolicyField, 3, 9);
         
         section.getChildren().addAll(sectionHeader, grid);
         return section;
@@ -781,7 +866,7 @@ public class PatientFormGUI {
             currentPatient.setLastName(lastNameField.getText());
             currentPatient.setDateOfBirth(dateOfBirthPicker.getValue());
             currentPatient.setGender(genderComboBox.getValue());
-            currentPatient.setAddress(addressField.getText());
+            currentPatient.setAddress(buildFullAddress());
             currentPatient.setPhoneNumber(phoneField.getText());
             currentPatient.setEmail(emailField.getText());
             currentPatient.setEmergencyContact(emergencyContactField.getText());
@@ -811,7 +896,10 @@ public class PatientFormGUI {
         lastNameField.clear();
         dateOfBirthPicker.setValue(null);
         genderComboBox.setValue(null);
-        addressField.clear();
+        streetAddressField.clear();
+        cityField.clear();
+        stateField.clear();
+        zipCodeField.clear();
         phoneField.clear();
         emailField.clear();
         emergencyContactField.clear();
@@ -868,7 +956,7 @@ public class PatientFormGUI {
         currentPatient.setLastName(lastNameField.getText());
         currentPatient.setDateOfBirth(dateOfBirthPicker.getValue());
         currentPatient.setGender(genderComboBox.getValue());
-        currentPatient.setAddress(addressField.getText());
+        currentPatient.setAddress(buildFullAddress());
         currentPatient.setPhoneNumber(phoneField.getText());
         currentPatient.setEmail(emailField.getText());
         currentPatient.setEmergencyContact(emergencyContactField.getText());
@@ -997,6 +1085,75 @@ public class PatientFormGUI {
         alert.getDialogPane().setPrefSize(450, 300);
         
         alert.showAndWait();
+    }
+    
+    /**
+     * Build full address from separate address components
+     */
+    private String buildFullAddress() {
+        StringBuilder fullAddress = new StringBuilder();
+        
+        String street = streetAddressField.getText().trim();
+        String city = cityField.getText().trim();
+        String state = stateField.getText().trim();
+        String zip = zipCodeField.getText().trim();
+        
+        if (!street.isEmpty()) {
+            fullAddress.append(street);
+        }
+        
+        if (!city.isEmpty()) {
+            if (fullAddress.length() > 0) fullAddress.append(", ");
+            fullAddress.append(city);
+        }
+        
+        if (!state.isEmpty()) {
+            if (fullAddress.length() > 0) fullAddress.append(", ");
+            fullAddress.append(state);
+        }
+        
+        if (!zip.isEmpty()) {
+            if (fullAddress.length() > 0) fullAddress.append(" ");
+            fullAddress.append(zip);
+        }
+        
+        return fullAddress.toString();
+    }
+    
+    /**
+     * Parse full address into separate components and populate fields
+     */
+    private void parseAndSetAddress(String fullAddress) {
+        if (fullAddress == null || fullAddress.trim().isEmpty()) {
+            streetAddressField.clear();
+            cityField.clear();
+            stateField.clear();
+            zipCodeField.clear();
+            return;
+        }
+        
+        // Simple parsing logic - this can be enhanced for more complex addresses
+        String[] parts = fullAddress.split(",");
+        
+        if (parts.length >= 1) {
+            streetAddressField.setText(parts[0].trim());
+        }
+        
+        if (parts.length >= 2) {
+            cityField.setText(parts[1].trim());
+        }
+        
+        if (parts.length >= 3) {
+            String stateZip = parts[2].trim();
+            // Try to separate state and zip code
+            String[] stateZipParts = stateZip.split(" ");
+            if (stateZipParts.length >= 1) {
+                stateField.setText(stateZipParts[0]);
+            }
+            if (stateZipParts.length >= 2) {
+                zipCodeField.setText(stateZipParts[stateZipParts.length - 1]);
+            }
+        }
     }
     
     public void show() {

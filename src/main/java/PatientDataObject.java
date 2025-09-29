@@ -7,9 +7,49 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * PatientDataObject.java - Enhanced Patient Data Model
+ * 
  * A JSON-like object that contains all patient data collected during the check-in process.
  * This object serves as a complete snapshot of patient information and can be easily
  * serialized to JSON or stored in a database.
+ * 
+ * DESIGN DECISIONS & ENHANCEMENTS:
+ * 
+ * 1. ADDRESS FIELD EXPANSION:
+ *    - Added separate address component fields alongside legacy 'address' field:
+ *      • streetAddress: Street number, name, apartment/suite
+ *      • city: City name
+ *      • state: State abbreviation
+ *      • zipCode: Postal code
+ *    
+ *    RATIONALE: Provides structured address data for better validation,
+ *    searching, and reporting while maintaining backward compatibility
+ *    with existing systems that expect a single address string.
+ *
+ * 2. BACKWARD COMPATIBILITY:
+ *    - Maintained original 'address' field to avoid breaking existing code
+ *    - Legacy systems continue to work without modification
+ *    - New systems can leverage structured address components
+ *    
+ *    RATIONALE: Ensures smooth migration path and prevents disruption
+ *    to existing integrations while enabling future enhancements.
+ *
+ * 3. JSON SERIALIZATION ENHANCEMENT:
+ *    - Updated toJsonString() to include all address components
+ *    - Maintains consistent JSON structure
+ *    - Allows for rich address-based queries and analytics
+ *
+ * 4. ADDRESS PARSING LOGIC:
+ *    - parseAddressIntoComponents(): Intelligent parsing of legacy addresses
+ *    - Handles common address formats (street, city, state zip)
+ *    - Graceful handling of incomplete or malformed addresses
+ *
+ *    RATIONALE: Enables automatic migration of existing address data
+ *    to new structured format without manual data entry.
+ *
+ * @author Team 8 - Data Model Enhancement
+ * @version 2.0 - Structured Address Support
+ * @date September 28, 2025
  */
 public class PatientDataObject {
     
@@ -27,7 +67,11 @@ public class PatientDataObject {
     // Contact information
     private String phoneNumber;
     private String email;
-    private String address;
+    private String address; // Keep for backward compatibility
+    private String streetAddress;
+    private String city;
+    private String state;
+    private String zipCode;
     private String emergencyContact;
     private String emergencyPhone;
     
@@ -132,6 +176,7 @@ public class PatientDataObject {
         this.phoneNumber = patient.getPhoneNumber();
         this.email = patient.getEmail();
         this.address = patient.getAddress();
+        parseAddressIntoComponents(this.address); // Parse address into components
         this.emergencyContact = patient.getEmergencyContact();
         this.emergencyPhone = patient.getEmergencyPhone();
         this.insuranceProvider = patient.getInsuranceProvider();
@@ -199,6 +244,19 @@ public class PatientDataObject {
     
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    
+    // New separate address component getters and setters
+    public String getStreetAddress() { return streetAddress; }
+    public void setStreetAddress(String streetAddress) { this.streetAddress = streetAddress; }
+    
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+    
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+    
+    public String getZipCode() { return zipCode; }
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
     
     public String getEmergencyContact() { return emergencyContact; }
     public void setEmergencyContact(String emergencyContact) { this.emergencyContact = emergencyContact; }
@@ -326,6 +384,10 @@ public class PatientDataObject {
         json.append("    \"phoneNumber\": \"").append(phoneNumber != null ? phoneNumber : "").append("\",\n");
         json.append("    \"email\": \"").append(email != null ? email : "").append("\",\n");
         json.append("    \"address\": \"").append(address != null ? address : "").append("\",\n");
+        json.append("    \"streetAddress\": \"").append(streetAddress != null ? streetAddress : "").append("\",\n");
+        json.append("    \"city\": \"").append(city != null ? city : "").append("\",\n");
+        json.append("    \"state\": \"").append(state != null ? state : "").append("\",\n");
+        json.append("    \"zipCode\": \"").append(zipCode != null ? zipCode : "").append("\",\n");
         json.append("    \"emergencyContact\": \"").append(emergencyContact != null ? emergencyContact : "").append("\",\n");
         json.append("    \"emergencyPhone\": \"").append(emergencyPhone != null ? emergencyPhone : "").append("\"\n");
         json.append("  },\n");
@@ -387,6 +449,42 @@ public class PatientDataObject {
         json.append("}");
         
         return json.toString();
+    }
+    
+    /**
+     * Parse full address string into separate address components
+     */
+    private void parseAddressIntoComponents(String fullAddress) {
+        if (fullAddress == null || fullAddress.trim().isEmpty()) {
+            this.streetAddress = "";
+            this.city = "";
+            this.state = "";
+            this.zipCode = "";
+            return;
+        }
+        
+        // Simple parsing logic - can be enhanced for more complex addresses
+        String[] parts = fullAddress.split(",");
+        
+        if (parts.length >= 1) {
+            this.streetAddress = parts[0].trim();
+        }
+        
+        if (parts.length >= 2) {
+            this.city = parts[1].trim();
+        }
+        
+        if (parts.length >= 3) {
+            String stateZip = parts[2].trim();
+            // Try to separate state and zip code
+            String[] stateZipParts = stateZip.split(" ");
+            if (stateZipParts.length >= 1) {
+                this.state = stateZipParts[0];
+            }
+            if (stateZipParts.length >= 2) {
+                this.zipCode = stateZipParts[stateZipParts.length - 1];
+            }
+        }
     }
     
     @Override
