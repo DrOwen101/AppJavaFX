@@ -163,5 +163,44 @@ public class AppStyleManager {
             }
             scene.getRoot().setStyle("-fx-font-size: " + px + "px;");
         } catch (Exception ignored) {}
+
+        // Remove inline background/border/effect styles from nodes so stylesheets (dark/light)
+        // can control the appearance of containers like VBoxes. This strips only known
+        // background/border/effect properties and preserves other inline styles.
+        try {
+            stripInlineBackgroundStyles(scene.getRoot());
+        } catch (Exception ignored) {}
+    }
+
+    private void stripInlineBackgroundStyles(javafx.scene.Node node) {
+        if (node == null) return;
+
+        // Check and remove background/border/effect properties from inline style
+        try {
+            // Skip Button instances so their explicit fills/colors remain intact
+            if (node instanceof javafx.scene.control.Button) return;
+
+            String style = node.getStyle();
+            if (style != null && !style.isEmpty()) {
+                // Remove occurrences of -fx-background, -fx-background-color, -fx-border-*, -fx-effect
+                String cleaned = style.replaceAll("(?i)-fx-background(?:-[^:]+)?\\s*:[^;}]+;?","" )
+                                      .replaceAll("(?i)-fx-border(?:-[^:]+)?\\s*:[^;}]+;?","" )
+                                      .replaceAll("(?i)-fx-effect\\s*:[^;}]+;?","" );
+                // Trim leftover semicolons and whitespace
+                cleaned = cleaned.replaceAll(";{2,}",";").trim();
+                if (cleaned.endsWith(";")) cleaned = cleaned.substring(0, cleaned.length()-1).trim();
+                if (!cleaned.equals(style)) {
+                    node.setStyle(cleaned);
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // Recurse into children if Parent
+        if (node instanceof javafx.scene.Parent) {
+            javafx.scene.Parent p = (javafx.scene.Parent) node;
+            for (javafx.scene.Node child : p.getChildrenUnmodifiable()) {
+                stripInlineBackgroundStyles(child);
+            }
+        }
     }
 }

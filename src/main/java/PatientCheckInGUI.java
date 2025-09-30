@@ -108,27 +108,18 @@ public class PatientCheckInGUI {
         stage = new Stage();
         stage.setTitle("Patient Check-In System");
         
-        // Create main layout with modern gradient background
+        // Create main layout with modern gradient background (use CSS class)
         mainLayout = new VBox(20);
         mainLayout.setPadding(new Insets(25));
-        mainLayout.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #e8f5e8, #f1f8e9);"
-        );
+        mainLayout.getStyleClass().add("main-layout");
         
         // Create header section
         createHeaderSection();
         
-        // Create content area with modern card styling
+        // Create content area (card) — styles applied via CSS
         contentArea = new VBox(15);
         contentArea.setPadding(new Insets(25));
-        contentArea.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);" +
-            "-fx-border-color: #c8e6c9;" +
-            "-fx-border-width: 1;"
-        );
+        contentArea.getStyleClass().add("card");
         
         // Create button area
         createButtonArea();
@@ -154,19 +145,16 @@ public class PatientCheckInGUI {
         
         // Create scene and show
         Scene scene = new Scene(scrollPane, 900, 800);
-        stage.setScene(scene);
-        stage.show();
+    stage.setScene(scene);
+    // Apply current app styles (theme + size) to this stage
+    AppStyleManager.getInstance().applyToStage(stage);
+    stage.show();
     }
     
     private VBox createHeaderSection() {
         VBox header = new VBox(15);
         header.setPadding(new Insets(20));
-        header.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #2e7d32, #388e3c);" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 3);"
-        );
+        header.getStyleClass().add("header");
         
         // Create top row with title and save button
         HBox topRow = new HBox();
@@ -439,6 +427,7 @@ public class PatientCheckInGUI {
     // Step 1: Patient Identification
     private void loadPatientIdentificationStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Please verify patient identification information:"));
         
         GridPane grid = new GridPane();
@@ -467,6 +456,7 @@ public class PatientCheckInGUI {
     // Step 2: Insurance Verification
     private void loadInsuranceVerificationStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Verify patient insurance information:"));
         
         GridPane grid = new GridPane();
@@ -495,6 +485,7 @@ public class PatientCheckInGUI {
     // Step 3: Appointment Confirmation
     private void loadAppointmentConfirmationStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Confirm appointment details:"));
         
         GridPane grid = new GridPane();
@@ -531,6 +522,7 @@ public class PatientCheckInGUI {
     // Step 4: Contact Information Update
     private void loadContactInformationStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Update contact information (optional):"));
         
         GridPane grid = new GridPane();
@@ -564,6 +556,7 @@ public class PatientCheckInGUI {
     // Step 5: Payment Processing
     private void loadPaymentProcessingStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Process payment information:"));
         
         GridPane grid = new GridPane();
@@ -595,6 +588,7 @@ public class PatientCheckInGUI {
     // Step 6: Health Screening
     private void loadHealthScreeningStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Conduct health screening:"));
         
         GridPane grid = new GridPane();
@@ -625,6 +619,7 @@ public class PatientCheckInGUI {
     // Step 7: Check-in Completion
     private void loadCompletionStep() {
         VBox stepContent = new VBox(15);
+        stepContent.getStyleClass().add("card");
         stepContent.getChildren().add(new Label("Complete check-in process:"));
         
         GridPane grid = new GridPane();

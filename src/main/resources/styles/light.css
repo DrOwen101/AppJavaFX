@@ -12,3 +12,52 @@
 .label {
     -fx-padding: 4 0 4 0;
 }
+
+/* Named classes for main layout and card containers */
+.main-layout {
+    -fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);
+    -fx-border-color: #e8f5e8;
+    -fx-border-width: 1;
+}
+
+.header {
+    -fx-background-color: linear-gradient(to bottom, #2e7d32, #388e3c);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+}
+
+/* Smaller card variants and sections */
+.sub-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 1;
+}
+
+.patient-photo {
+    -fx-background-color: #f5f5f5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);
+}
+
+.btn-upload {
+    -fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);
+    -fx-text-fill: white;
+    -fx-background-radius: 18;
+}
+
+.photo-info {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+}
+
+.patient-info-section {
+    -fx-background-color: transparent; /* allow card to provide container fill */
+}

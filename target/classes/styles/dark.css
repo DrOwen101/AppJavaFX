@@ -7,7 +7,61 @@
 .button {
     -fx-text-fill: white;
 }
-
+.label {
+    -fx-text-fill: #e0f2f1;
+}
+.vbox, .hbox {
+    -fx-background-color: linear-gradient(to bottom, #1f1f1f, #2b2b2b);
+}
 .label {
     -fx-padding: 4 0 4 0;
+}
+
+/* Named classes for main layout and card containers */
+.main-layout {
+    -fx-background: linear-gradient(to bottom, #1f1f1f, #2b2b2b);
+}
+
+.card {
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 8);
+    -fx-border-color: #3a3a3a;
+    -fx-border-width: 1;
+}
+
+.header {
+    -fx-background-color: linear-gradient(to bottom, #1b5e20, #2e7d32);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+}
+
+/* Smaller card variants and sections */
+.sub-card {
+    -fx-background-color: #232323;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #333333;
+    -fx-border-width: 1;
+}
+
+.patient-photo {
+    -fx-background-color: #1f1f1f;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0, 0, 4);
+}
+
+.btn-upload {
+    -fx-background-color: linear-gradient(to bottom, #4caf50, #388e3c);
+    -fx-text-fill: white;
+    -fx-background-radius: 18;
+}
+
+.photo-info {
+    -fx-text-fill: #b8c6b8;
+    -fx-font-size: 12px;
+}
+
+.patient-info-section {
+    -fx-background-color: transparent; /* allow card to provide container fill */
 }

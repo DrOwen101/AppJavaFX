@@ -68,11 +68,10 @@ public class PatientFormGUI {
         stage = new Stage();
         stage.setTitle("HealthCare Pro - Patient Information");
         
-        // Create main layout with modern styling
-        VBox mainLayout = new VBox(0);
-        mainLayout.setStyle(
-            "-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);" // Light green gradient
-        );
+        // Create main layout (visuals controlled by CSS)
+        VBox mainLayout = new VBox(12);
+        mainLayout.setPadding(new Insets(20));
+        mainLayout.getStyleClass().add("main-layout");
         
         // Create header section with save button
         HBox headerSection = createModernHeaderSection();
@@ -92,6 +91,7 @@ public class PatientFormGUI {
             createModernMedicalHistorySection(),
             createModernButtonSection()
         );
+        formContent.getStyleClass().add("card");
         
         scrollPane.setContent(formContent);
         scrollPane.setFitToWidth(true);
@@ -102,8 +102,10 @@ public class PatientFormGUI {
         
         // Create scene with modern styling
         Scene scene = new Scene(mainLayout, 900, 750);
-        stage.setScene(scene);
-        stage.centerOnScreen();
+    stage.setScene(scene);
+    // Apply current app styles (theme + size) to this stage
+    AppStyleManager.getInstance().applyToStage(stage);
+    stage.centerOnScreen();
         
         // Load existing patient data if any
         loadPatientData();
@@ -194,14 +196,7 @@ public class PatientFormGUI {
     private VBox createModernPatientInfoSection() {
         VBox section = new VBox(20);
         section.setPadding(new Insets(25));
-        section.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
-            "-fx-border-color: #e8f5e8;" +
-            "-fx-border-width: 1;"
-        );
+        section.getStyleClass().add("card");
         
         // Section header
         Label sectionHeader = new Label("👤 Patient Demographics");
@@ -352,117 +347,51 @@ public class PatientFormGUI {
     private VBox createModernPatientPictureSection() {
         VBox section = new VBox(20);
         section.setPadding(new Insets(25));
-        section.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
-            "-fx-border-color: #e8f5e8;" +
-            "-fx-border-width: 1;"
-        );
-        
+        section.getStyleClass().add("card");
+
         // Section header
         Label sectionHeader = new Label("📷 Patient Photo");
         sectionHeader.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
-        sectionHeader.setStyle("-fx-text-fill: #1b5e20;");
-        
-        // Picture container
-        VBox pictureContainer = new VBox(15);
-        pictureContainer.setAlignment(Pos.CENTER);
-        
-        // Image view for patient photo
-        patientImageView = new ImageView();
-        patientImageView.setFitWidth(150);
-        patientImageView.setFitHeight(150);
-        patientImageView.setPreserveRatio(true);
-        patientImageView.setStyle(
-            "-fx-background-color: #f1f8e9;" +
-            "-fx-background-radius: 75;" +
-            "-fx-border-radius: 75;" +
-            "-fx-border-color: #4caf50;" +
-            "-fx-border-width: 3;" +
-            "-fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.3), 10, 0, 0, 2);"
-        );
-        
-        // Default placeholder if no image
-        try {
-            // Set a default placeholder image or icon
-            patientImageView.setImage(new Image(getClass().getResourceAsStream("/placeholder-patient.png")));
-        } catch (Exception e) {
-            // If no placeholder image found, just use the styled empty view
-            LOGGER.warning(() -> "No placeholder image found: " + e.getMessage());
+        sectionHeader.getStyleClass().add("header");
+
+        // Image view for patient photo (field)
+        if (patientImageView == null) {
+            patientImageView = new ImageView();
+            patientImageView.setFitWidth(150);
+            patientImageView.setFitHeight(150);
+            patientImageView.setPreserveRatio(true);
+            patientImageView.getStyleClass().add("patient-photo");
         }
-        
-        // Upload button
-        Button uploadButton = new Button("📁 Choose Photo");
-        uploadButton.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12 24;" +
-            "-fx-background-radius: 25;" +
-            "-fx-border-radius: 25;" +
-            "-fx-cursor: hand;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);"
-        );
-        
-        // Button hover effect
-        uploadButton.setOnMouseEntered(e -> uploadButton.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12 24;" +
-            "-fx-background-radius: 25;" +
-            "-fx-border-radius: 25;" +
-            "-fx-cursor: hand;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0, 0, 4);" +
-            "-fx-scale-x: 1.05;" +
-            "-fx-scale-y: 1.05;"
-        ));
-        
-        uploadButton.setOnMouseExited(e -> uploadButton.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #66bb6a, #4caf50);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12 24;" +
-            "-fx-background-radius: 25;" +
-            "-fx-border-radius: 25;" +
-            "-fx-cursor: hand;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
-            "-fx-scale-x: 1.0;" +
-            "-fx-scale-y: 1.0;"
-        ));
-        
+
+        HBox pictureContainer = new HBox(15);
+        pictureContainer.setAlignment(Pos.CENTER_LEFT);
+
+        Button uploadButton = new Button("Upload Photo");
+        uploadButton.getStyleClass().add("btn-upload");
         uploadButton.setOnAction(e -> selectPatientPicture());
-        
-        // Photo info label
+
         Label photoInfo = new Label("📝 Upload a clear, recent photo (JPG, PNG)");
-        photoInfo.setStyle(
-            "-fx-text-fill: #6b7280;" +
-            "-fx-font-size: 12px;" +
-            "-fx-font-style: italic;"
-        );
-        
+        photoInfo.getStyleClass().add("photo-info");
+
+        // Try to load a default placeholder image (if present)
+        try {
+            if (getClass().getResourceAsStream("/placeholder-patient.png") != null) {
+                patientImageView.setImage(new Image(getClass().getResourceAsStream("/placeholder-patient.png")));
+            }
+        } catch (Exception e) {
+            LOGGER.fine(() -> "No placeholder image available: " + e.getMessage());
+        }
+
         pictureContainer.getChildren().addAll(patientImageView, uploadButton, photoInfo);
         section.getChildren().addAll(sectionHeader, pictureContainer);
-        
+
         return section;
     }
     
     private VBox createModernMedicalHistorySection() {
         VBox section = new VBox(20);
         section.setPadding(new Insets(25));
-        section.setStyle(
-            "-fx-background-color: white;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-radius: 15;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" +
-            "-fx-border-color: #e8f5e8;" +
-            "-fx-border-width: 1;"
-        );
+        section.getStyleClass().add("card");
         
         // Section header
         Label sectionHeader = new Label("🏥 Medical History");
@@ -502,13 +431,7 @@ public class PatientFormGUI {
                                          TextField inputField, String buttonText, Runnable addAction) {
         VBox box = new VBox(15);
         box.setPadding(new Insets(15));
-        box.setStyle(
-            "-fx-background-color: #f8fdf8;" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-radius: 10;" +
-            "-fx-border-color: #c8e6c9;" +
-            "-fx-border-width: 1;"
-        );
+        box.getStyleClass().add("sub-card");
         
         Label titleLabel = new Label(title);
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
