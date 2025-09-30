@@ -1,0 +1,5 @@
+I used AI for some of the more tedious parts of the code, like reformatting it to use style sheets to be swapped out for dark mode.
+This was the most efficient way I could think to do it, and I think it paid off.
+I definitely did need to refine the prompt to include pages, vboxes, and containiers, but eventually it worked itself out.
+It also happened that every pass made more visual bugs to fix like buttons suddenly becoming transparent, so I went through and took care of those.
+Other than that, most of it was hand-written. I think I did a good job there.
