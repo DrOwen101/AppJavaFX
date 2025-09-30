@@ -1,0 +1,14 @@
+/* Light theme basics */
+.root {
+    -fx-base: #ffffff;
+    -fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);
+    -fx-text-fill: #1b5e20;
+}
+.button {
+    -fx-text-fill: white;
+}
+
+/* Slightly larger controls spacing */
+.label {
+    -fx-padding: 4 0 4 0;
+}

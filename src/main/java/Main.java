@@ -90,6 +90,8 @@ public class Main extends Application {
         mainLayout.getChildren().addAll(headerSection, buttonContainer);
         
         Scene scene = new Scene(mainLayout, 450, 550);
+    // Apply current global styles (theme and font size)
+    AppStyleManager.getInstance().applyToScene(scene);
         primaryStage.setTitle("HealthCare Pro - Patient Management System");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
@@ -108,6 +110,7 @@ public class Main extends Application {
         Label titleLabel = new Label("HealthCare Pro");
         titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
         titleLabel.setStyle("-fx-text-fill: #1b5e20;"); // Dark green
+    titleLabel.getStyleClass().add("header-label");
         
         // Subtitle
         Label subtitleLabel = new Label("Patient Management System");
@@ -118,6 +121,7 @@ public class Main extends Application {
         Label versionLabel = new Label("v2.0 • Professional Edition");
         versionLabel.setFont(Font.font("Segoe UI", FontWeight.LIGHT, 12));
         versionLabel.setStyle("-fx-text-fill: #81c784;"); // Light green
+    versionLabel.getStyleClass().add("header-label");
         
         header.getChildren().addAll(titleLabel, subtitleLabel, versionLabel);
         return header;

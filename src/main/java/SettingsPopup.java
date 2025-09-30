@@ -2,6 +2,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -59,6 +61,7 @@ public class SettingsPopup {
         Label headerLabel = new Label("⚙ Settings");
         headerLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 24));
         headerLabel.setStyle("-fx-text-fill: #1b5e20;");
+    headerLabel.getStyleClass().add("header-label");
         
         // Create the main message label
         Label messageLabel = new Label("Please check in your next patient");
@@ -110,12 +113,85 @@ public class SettingsPopup {
         });
         
         closeButton.setOnAction(e -> handleCloseButtonClick());
+
+        // Theme toggle (Light / Dark)
+        ToggleButton themeToggle = new ToggleButton("Dark Mode");
+        themeToggle.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 13));
+        themeToggle.setSelected(AppStyleManager.getInstance().isDarkMode());
+        themeToggle.setOnAction(e -> {
+            boolean dark = themeToggle.isSelected();
+            AppStyleManager.getInstance().setDarkMode(dark);
+            AppStyleManager.getInstance().applyToScene(popupStage.getScene());
+        });
+
+        // Font size choice box (small/normal/large mapped to size variants)
+        ChoiceBox<String> fontChoice = new ChoiceBox<>();
+        fontChoice.getItems().addAll("Small", "Normal", "Large");
+        AppStyleManager.SizeVariant currentVariant = AppStyleManager.getInstance().getSizeVariant();
+        switch (currentVariant) {
+            case SMALL: fontChoice.setValue("Small"); break;
+            case LARGE: fontChoice.setValue("Large"); break;
+            default: fontChoice.setValue("Normal"); break;
+        }
+        fontChoice.setOnAction(e -> {
+            String v = fontChoice.getValue();
+            AppStyleManager.SizeVariant variant = AppStyleManager.SizeVariant.NORMAL;
+            if ("Small".equals(v)) variant = AppStyleManager.SizeVariant.SMALL;
+            else if ("Large".equals(v)) variant = AppStyleManager.SizeVariant.LARGE;
+            AppStyleManager.getInstance().setSizeVariant(variant);
+            // apply live to this popup scene for immediate feedback
+            AppStyleManager.getInstance().applyToScene(popupStage.getScene());
+        });
+
+        // Apply button
+        Button applyButton = new Button("Apply");
+        applyButton.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 14));
+        applyButton.setPrefSize(120, 40);
+        applyButton.setOnAction(e -> {
+            // Apply settings to the whole app
+            AppStyleManager.getInstance().applyGlobally();
+        });
+        applyButton.setStyle(
+            "-fx-background-color: linear-gradient(to bottom, #5d5d5dff, #3e3e3eff);" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 20;" +
+            "-fx-border-radius: 20;" +
+            "-fx-cursor: hand;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);"
+        );
+        applyButton.setOnMouseEntered(e -> {
+            applyButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #383838ff, #323232ff);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 20;" +
+                "-fx-border-radius: 20;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0, 0, 3);" +
+                "-fx-scale-x: 1.05;" +
+                "-fx-scale-y: 1.05;"
+            );
+        });
+        applyButton.setOnMouseExited(e -> {
+            applyButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #5d5d5dff, #3e3e3eff);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 20;" +
+                "-fx-border-radius: 20;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" +
+                "-fx-scale-x: 1.0;" +
+                "-fx-scale-y: 1.0;"
+            );
+        });
         
         // Add components to layout with modern spacing
         mainLayout.getChildren().addAll(
             headerLabel,
             messageLabel,
             instructionLabel,
+            themeToggle,
+            fontChoice,
+            applyButton,
             closeButton
         );
         
@@ -130,7 +206,7 @@ public class SettingsPopup {
         container.getChildren().add(mainLayout);
         
         // Create and set the scene with modern dimensions
-        Scene scene = new Scene(container, 450, 350);
+        Scene scene = new Scene(container, 450, 450);
         scene.setFill(null); // Transparent background for rounded corners
         popupStage.setScene(scene);
         

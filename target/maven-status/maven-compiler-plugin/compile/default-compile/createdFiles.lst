@@ -1,7 +1,9 @@
 PatientFormGUI.class
+AppStyleManager$1.class
 PatientCheckInInterface.class
 SettingsPopup.class
 PatientForm.class
+SettingsPopup$1.class
 CheckInWorkflow.class
 CheckInPopup.class
 PatientDataObject.class
@@ -9,6 +11,8 @@ PatientDataStorage.class
 Main.class
 NewPatient$Appointment.class
 AppointmentManagerGUI.class
+AppStyleManager$SizeVariant.class
+AppStyleManager.class
 PatientCheckInGUI.class
 CheckInWorkflow$CheckInSession.class
 NewPatient.class

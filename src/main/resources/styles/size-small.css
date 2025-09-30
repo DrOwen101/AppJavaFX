@@ -1,0 +1,13 @@
+/* Small size variant */
+.root {
+    -fx-font-size: 12px;
+}
+.header-label {
+    -fx-font-size: 18px; /* headings slightly larger */
+}
+.button {
+    -fx-font-size: 12px;
+}
+.label {
+    -fx-font-size: 12px;
+}
