@@ -40,12 +40,39 @@ The Patient Management System is a comprehensive healthcare application designed
 
 ### Key Features
 - **Modern Green UI/UX Design** - Professional, calming interface optimized for healthcare environments
+- **🌙 Dark Mode Support** - Toggle between light and dark themes for better readability and reduced eye strain
 - **Patient Registration & Management** - Complete patient demographic and medical history tracking
 - **7-Step Check-In Workflow** - Guided patient check-in process with validation
 - **Data Persistence** - JSON-like data storage for patient records
 - **Appointment Management** - Schedule and track patient appointments
 - **Photo Management** - Patient photo upload and storage capabilities
 - **Insurance Processing** - Insurance verification and policy management
+
+---
+
+## 🌙 Dark Mode Feature
+
+The application now includes a comprehensive dark mode feature designed specifically for healthcare environments:
+
+### **How to Use Dark Mode**
+1. Launch the application
+2. Click the **"🌙 Dark Mode"** button at the top of the main menu  
+3. All windows instantly switch to dark theme
+4. Click **"🔆 Light Mode"** to switch back
+
+### **Benefits**
+- **Reduced Eye Strain** - Easier on the eyes during long shifts
+- **Better Focus** - Dark interface helps focus on patient data  
+- **Low-Light Friendly** - Perfect for dimly lit clinical environments
+- **Professional Appearance** - Modern, sleek interface
+
+### **Technical Features**
+- **Instant Theme Switching** - All open windows update immediately
+- **Consistent Design** - Maintains professional medical interface standards
+- **Automatic Registration** - New windows automatically inherit current theme
+- **Performance Optimized** - Minimal impact on application speed
+
+For detailed technical documentation, see [DARK_MODE_FEATURE.md](DARK_MODE_FEATURE.md).
 
 ---
 

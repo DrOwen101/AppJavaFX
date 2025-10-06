@@ -68,11 +68,14 @@ public class PatientFormGUI {
         stage = new Stage();
         stage.setTitle("HealthCare Pro - Patient Information");
         
-        // Create main layout with modern styling
+        // Create main layout with theme-aware styling
         VBox mainLayout = new VBox(0);
-        mainLayout.setStyle(
-            "-fx-background: linear-gradient(to bottom, #e8f5e8, #f0f9f0);" // Light green gradient
-        );
+        ThemeManager themeManager = ThemeManager.getInstance();
+        if (themeManager.isDarkMode()) {
+            mainLayout.setStyle(themeManager.getDarkModeStyles());
+        } else {
+            mainLayout.setStyle(themeManager.getLightModeStyles());
+        }
         
         // Create header section with save button
         HBox headerSection = createModernHeaderSection();
@@ -103,6 +106,10 @@ public class PatientFormGUI {
         // Create scene with modern styling
         Scene scene = new Scene(mainLayout, 900, 750);
         stage.setScene(scene);
+        
+        // Register with theme manager
+        themeManager.registerScene(scene);
+        
         stage.centerOnScreen();
         
         // Load existing patient data if any
