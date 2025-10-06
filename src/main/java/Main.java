@@ -1,3 +1,4 @@
+
 import java.util.logging.Logger;
 
 import javafx.application.Application;
@@ -163,25 +164,11 @@ public class Main extends Application {
     /**
      * Starts the patient check-in workflow with popup
      */
-    private void startCheckInWorkflow(Stage parentStage) {
-        // Show the check-in popup first
-        CheckInPopup popup = new CheckInPopup(parentStage, () -> {
-            // This callback is executed when the Start button is clicked
-            LOGGER.info("Check-in popup Start button clicked - opening check-in GUI");
-            
-            // Create and show the patient check-in GUI
-            PatientCheckInGUI checkInGUI = new PatientCheckInGUI();
-            checkInGUI.show();
-        });
-        
-        // Show the popup and wait for user interaction
-        boolean startClicked = popup.showAndWait();
-        
-        if (startClicked) {
-            LOGGER.info("Check-in workflow initiated successfully");
-        } else {
-            LOGGER.info("Check-in workflow cancelled by user");
-        }
+    private void startCheckInWorkflow(@SuppressWarnings("unused") Stage parentStage) {
+        // Directly show the patient check-in menu (skip the ready popup)
+        LOGGER.info("Opening check-in menu directly");
+        PatientCheckInMenu menu = new PatientCheckInMenu();
+        menu.show();
     }
     
     /**
@@ -196,9 +183,10 @@ public class Main extends Application {
         alert.setHeaderText("Patient Data Storage");
         
         if (storage.isEmpty()) {
-            alert.setContentText("No patients have been saved yet.\n\n" +
-                "Use 'Open Patient Form' or 'Start Patient Check-In' to add patients, " +
-                "then click 'Save and Leave Patient' to save them to storage.");
+            alert.setContentText("""
+                                 No patients have been saved yet.
+                                 
+                                 Use 'Open Patient Form' or 'Start Patient Check-In' to add patients, then click 'Save and Leave Patient' to save them to storage.""");
         } else {
             StringBuilder content = new StringBuilder();
             content.append(storage.getStorageStatistics()).append("\n");
