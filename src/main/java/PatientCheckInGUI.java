@@ -67,7 +67,15 @@ public class PatientCheckInGUI {
     // Step 4: Contact Information Update
     private TextField phoneField;
     private TextField emailField;
-    private TextField addressField;
+
+    // Added address components (keim)
+    // Changed addressField to street, city, state, zipCode fields
+    private TextField streetField;
+    private TextField cityField;
+    private TextField stateField;
+    private TextField zipCodeField;
+    // End of added address components (keim)
+
     private TextField emergencyContactField;
     
     // Step 5: Payment Processing
@@ -547,16 +555,34 @@ public class PatientCheckInGUI {
         emailField.setPromptText("Enter email address");
         grid.add(emailField, 1, 1);
         
-        grid.add(new Label("Address:"), 0, 2);
-        addressField = new TextField();
-        addressField.setPromptText("Enter current address");
-        grid.add(addressField, 1, 2);
+        // start of added address fields + row edits (keim)
+        grid.add(new Label("Street:"), 0, 2);
+        streetField = new TextField();
+        streetField.setPromptText("Enter street address");
+        grid.add(streetField, 1, 2);
+
+        grid.add(new Label("City:"), 0, 3);
+        cityField = new TextField();
+        cityField.setPromptText("Enter city");
+        grid.add(cityField, 1, 3);
+
+        grid.add(new Label("State:"), 0, 4);
+        stateField = new TextField();
+        stateField.setPromptText("Enter state");
+        grid.add(stateField, 1, 4);
+
+        grid.add(new Label("Zip Code:"), 0, 5);
+        zipCodeField = new TextField();
+        zipCodeField.setPromptText("Enter zip code");
+        grid.add(zipCodeField, 1, 5);
+        // End of added address fields (keim)
         
-        grid.add(new Label("Emergency Contact:"), 0, 3);
+        grid.add(new Label("Emergency Contact:"), 0, 6);
         emergencyContactField = new TextField();
         emergencyContactField.setPromptText("Enter emergency contact info");
-        grid.add(emergencyContactField, 1, 3);
-        
+        grid.add(emergencyContactField, 1, 6);
+        // end of row edits (keim)
+
         stepContent.getChildren().add(grid);
         contentArea.getChildren().add(stepContent);
     }
@@ -759,7 +785,10 @@ public class PatientCheckInGUI {
                     checkInWorkflow.updateContactInformation(
                         phoneField.getText().trim(),
                         emailField.getText().trim(),
-                        addressField.getText().trim(),
+                        streetField.getText().trim(),
+                        cityField.getText().trim(),
+                        stateField.getText().trim(),
+                        zipCodeField.getText().trim(),
                         emergencyContactField.getText().trim()
                     );
                     break;
@@ -895,11 +924,14 @@ public class PatientCheckInGUI {
                     }
                     break;
                 case 4:
-                    if (phoneField != null || emailField != null || addressField != null || emergencyContactField != null) {
+                    if (phoneField != null || emailField != null || streetField != null || cityField != null || stateField != null || zipCodeField != null || emergencyContactField != null) {
                         checkInWorkflow.updateContactInformation(
                             phoneField != null ? phoneField.getText().trim() : "",
                             emailField != null ? emailField.getText().trim() : "",
-                            addressField != null ? addressField.getText().trim() : "",
+                            streetField != null ? streetField.getText().trim() : "",
+                            cityField != null ? cityField.getText().trim() : "",
+                            stateField != null ? stateField.getText().trim() : "",
+                            zipCodeField != null ? zipCodeField.getText().trim() : "",
                             emergencyContactField != null ? emergencyContactField.getText().trim() : ""
                         );
                     }

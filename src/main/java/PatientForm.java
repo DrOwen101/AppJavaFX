@@ -5,7 +5,22 @@ import java.util.List;
 /**
  * Abstract class representing a patient form with basic demographic information,
  * medical history, and patient management functionality.
+ *
+ *
+ * Keim Design Rationale:
+ *    I figured the best way to add to this code was to copy the style it was written in.
+ *    I maintained the address object in order to reduce the amount of methods that would 
+ *    be changed from the origin. When adding the other components I followed the style to 
+ *    how address was used and added the corresponding methods while updating those that 
+ *    called the address ones when necessary. I followed this same method while writing
+ *    the gui and data storage code. For the GUI, I copied the block of code responsible 
+ *    for addressField and tweaked it to insert my own fields while following the same 
+ *    GUI structure. For data storage I maintained the address object and added objects
+ *    for each of the added components so that search features using them could easily 
+ *    be added. I also updated the check in step for updating information to take the 
+ *    new address component fields as well for user consistency.
  */
+
 public abstract class PatientForm {
     
     // Patient demographic information
@@ -13,6 +28,12 @@ public abstract class PatientForm {
     protected String lastName;
     protected LocalDate dateOfBirth;
     protected String gender;
+    // added address components (keim)
+    protected String street;
+    protected String city;
+    protected String state;
+    protected String zipCode;
+    // end of added address components (keim)
     protected String address;
     protected String phoneNumber;
     protected String email;
@@ -65,8 +86,28 @@ public abstract class PatientForm {
     public String getGender() { return gender; }
     public void setGender(String gender) { this.gender = gender; }
     
+    // start of added address components (keim)
+    public String getStreet() { return street; }
+    public void setStreet(String street) { this.street = street; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public String getZipCode() { return zipCode; }
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+
     public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public void setAddress(String street, String city, String state, String zipCode) { 
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.address = street + ", " + city + ", " + state + " " + zipCode;
+    }
+    // end of added address components (keim)
     
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }

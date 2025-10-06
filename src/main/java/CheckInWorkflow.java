@@ -206,7 +206,7 @@ public class CheckInWorkflow implements PatientCheckInInterface {
     }
     
     @Override
-    public boolean updateContactInformation(String phoneNumber, String email, String address, String emergencyContact) {
+    public boolean updateContactInformation(String phoneNumber, String email, String street, String city, String state, String zipCode, String emergencyContact) {
         try {
             boolean updated = false;
             
@@ -220,11 +220,28 @@ public class CheckInWorkflow implements PatientCheckInInterface {
                 updated = true;
             }
             
-            if (address != null && !address.trim().isEmpty()) {
-                patient.setAddress(address.trim());
+            // start of added address components (keim)
+            if (street != null && !street.trim().isEmpty()) {
+                patient.setStreet(street.trim());
                 updated = true;
             }
-            
+
+            if (city != null && !city.trim().isEmpty()) {
+                patient.setCity(city.trim());
+                updated = true;
+            }
+
+            if (state != null && !state.trim().isEmpty()) {
+                patient.setState(state.trim());
+                updated = true;
+            }
+
+            if (zipCode != null && !zipCode.trim().isEmpty()) {
+                patient.setZipCode(zipCode.trim());
+                updated = true;
+            }
+            // end of added address components (keim)
+
             if (emergencyContact != null && !emergencyContact.trim().isEmpty()) {
                 patient.setEmergencyContact(emergencyContact.trim());
                 updated = true;

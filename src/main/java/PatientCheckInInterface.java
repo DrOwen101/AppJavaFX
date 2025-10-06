@@ -42,7 +42,7 @@ public interface PatientCheckInInterface {
      * @param emergencyContact Emergency contact information
      * @return true if contact information is successfully updated, false otherwise
      */
-    boolean updateContactInformation(String phoneNumber, String email, String address, String emergencyContact);
+    boolean updateContactInformation(String phoneNumber, String email, String street, String city, String state, String zipCode, String emergencyContact);
     
     /**
      * Processes co-payment collection for the visit
