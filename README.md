@@ -212,3 +212,6 @@ This application is developed for educational and healthcare management purposes
 ## 🤝 Contributing
 
 We welcome contributions to improve the Patient Management System. Please follow the existing code style and patterns when submitting pull requests. Ensure all new features include appropriate user stories and maintain the professional green theme design language.
+
+## 🤝 My Contribution
+I implemented a mostly functioning dark and light mode. There needs to be testing with the Patient Check in GUI and Patient Form GUI. I could not implement much testing because I did not have access to the database to delete mock patients. Again with the push notifications, I could not perform proper testing without access to database, so it is incomplete. The settings panel , itself, is functional in all ascepts.

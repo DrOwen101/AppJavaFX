@@ -1,0 +1,99 @@
+.root {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #f0f0f0;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #f0f0f0;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #f0f0f0;
+    -fx-background-radius: 8;
+}
+.button:hover {
+    -fx-background-color: #4c5052;
+}
+
+/* Text fields */
+.text-field {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #f0f0f0;
+    -fx-border-color: #5a5a5a;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #5a5a5a;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.combo-box .list-cell {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #f0f0f0;
+}
+.combo-box .arrow {
+    -fx-background-color: #f0f0f0;
+}
+
+.button-container {
+    -fx-background-color: #3c3f41;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #5a5a5a;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 5);
+}
+
+.patient-info-section {
+    -fx-background-color: #2f2f2f;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #5a5a5a;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 3);
+}
+
+.app-scrollpane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+/* Header section */
+.header-section {
+    -fx-background-color: linear-gradient(to bottom, #1b5e20, #2e7d32);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 3);
+}
+
+/* Save & Leave button */
+.save-leave-btn {
+    -fx-background-color: linear-gradient(to bottom, #ef6c00, #e65100);
+    -fx-text-fill: white;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 3);
+}
+.save-leave-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, #ff9800, #f57c00);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.content-area {
+    -fx-background-color: #2c2c2c; /* dark gray */
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 20, 0, 0, 5);
+    -fx-border-color: #424242;
+    -fx-border-width: 1;
+}
